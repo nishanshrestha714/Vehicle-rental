@@ -1,0 +1,454 @@
+
+   :root {
+     --vc-bg: #0f0f11;
+     --vc-surface: #18181c;
+     --vc-surface-2: #222228;
+     --vc-border: rgba(255, 255, 255, 0.07);
+     --vc-accent: #e63946;
+     --vc-accent-2: #ff6b35;
+     --vc-gold: #c9a84c;
+     --vc-text-primary: #f0ede8;
+     --vc-text-secondary: #8a8794;
+     --vc-text-dim: #55535e;
+     --vc-radius: 16px;
+     --vc-radius-sm: 8px;
+     --vc-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
+     --vc-transition: 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+     --vc-font-display: 'Bebas Neue', sans-serif;
+     --vc-font-body: 'DM Sans', sans-serif;
+   }
+   
+   /* ── Card Shell ── */
+   .vc-card {
+     position: relative;
+     display: flex;
+     flex-direction: column;
+     width: 100%;
+     max-width: 340px;
+     background: var(--vc-surface);
+     border: 1px solid var(--vc-border);
+     border-radius: var(--vc-radius);
+     box-shadow: var(--vc-shadow);
+     overflow: hidden;
+     font-family: var(--vc-font-body);
+     color: var(--vc-text-primary);
+     transition: transform var(--vc-transition), box-shadow var(--vc-transition);
+     cursor: pointer;
+   }
+   
+   .vc-card:hover {
+     transform: translateY(-8px) scale(1.012);
+     box-shadow:
+       0 40px 80px rgba(0, 0, 0, 0.7),
+       0 0 0 1px rgba(230, 57, 70, 0.3),
+       0 0 40px rgba(230, 57, 70, 0.06);
+   }
+   
+   /* Gloss shimmer on hover */
+   .vc-gloss {
+     position: absolute;
+     inset: 0;
+     z-index: 10;
+     pointer-events: none;
+     background: linear-gradient(
+       135deg,
+       rgba(255, 255, 255, 0.04) 0%,
+       transparent 50%,
+       rgba(255, 255, 255, 0.02) 100%
+     );
+     border-radius: var(--vc-radius);
+     opacity: 0;
+     transition: opacity var(--vc-transition);
+   }
+   
+   .vc-card:hover .vc-gloss {
+     opacity: 1;
+   }
+   
+   /* ── Image Section ── */
+   .vc-image-link {
+     display: block;
+     text-decoration: none;
+   }
+   
+   .vc-image-wrap {
+     position: relative;
+     width: 100%;
+     height: 200px;
+     overflow: hidden;
+     background: #0a0a0c;
+   }
+   
+   .vc-image {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     display: block;
+     transition: transform var(--vc-transition), filter var(--vc-transition);
+     filter: saturate(0.85) brightness(0.9);
+   }
+   
+   .vc-card:hover .vc-image {
+     transform: scale(1.06);
+     filter: saturate(1.05) brightness(0.95);
+   }
+   
+   .vc-image-overlay {
+     position: absolute;
+     inset: 0;
+     background: linear-gradient(
+       to bottom,
+       rgba(0, 0, 0, 0.1) 0%,
+       transparent 40%,
+       rgba(0, 0, 0, 0.55) 100%
+     );
+   }
+   
+   /* ── Top Badges ── */
+   .vc-badges-top {
+     position: absolute;
+     top: 12px;
+     left: 12px;
+     display: flex;
+     align-items: center;
+     gap: 8px;
+   }
+   
+   .vc-type-badge {
+     background: var(--vc-accent);
+     color: #fff;
+     font-family: var(--vc-font-display);
+     font-size: 13px;
+     letter-spacing: 1.5px;
+     padding: 3px 10px 2px;
+     border-radius: 4px;
+     text-transform: uppercase;
+   }
+   
+   .vc-color-dot {
+     width: 16px;
+     height: 16px;
+     border-radius: 50%;
+     border: 2px solid rgba(255, 255, 255, 0.4);
+     display: inline-block;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+   }
+   
+   /* ── License Pill ── */
+   .vc-license {
+     position: absolute;
+     bottom: 12px;
+     right: 12px;
+     background: rgba(0, 0, 0, 0.65);
+     /* backdrop-filter: blur(6px); */
+     border: 1px solid rgba(255, 255, 255, 0.1);
+     border-radius: 6px;
+     padding: 4px 10px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     line-height: 1.1;
+   }
+   
+   .vc-license span {
+     font-size: 8px;
+     letter-spacing: 1.5px;
+     text-transform: uppercase;
+     color: var(--vc-text-secondary);
+   }
+   
+   .vc-license strong {
+     font-family: var(--vc-font-display);
+     font-size: 18px;
+     color: var(--vc-gold);
+     letter-spacing: 1px;
+   }
+   
+   /* ── Card Body ── */
+   .vc-body {
+     padding: 18px 20px 20px;
+     display: flex;
+     flex-direction: column;
+     gap: 0;
+   }
+   
+   /* ── Brand Row ── */
+   .vc-brand-row {
+     display: flex;
+     justify-content: space-between;
+     align-items: baseline;
+     margin-bottom: 4px;
+   }
+   
+   .vc-brand {
+     font-family: var(--vc-font-display);
+     font-size: 13px;
+     letter-spacing: 2.5px;
+     color: var(--vc-accent);
+     text-transform: uppercase;
+   }
+   
+   .vc-year {
+     font-size: 12px;
+     color: var(--vc-text-dim);
+     font-weight: 300;
+   }
+   
+   /* ── Name ── */
+   .vc-name-link {
+     text-decoration: none;
+   }
+   
+   .vc-name {
+     font-family: var(--vc-font-display);
+     font-size: 28px;
+     letter-spacing: 1.5px;
+     color: var(--vc-text-primary);
+     margin: 0 0 2px;
+     line-height: 1;
+     text-transform: uppercase;
+     transition: color 0.2s;
+   }
+   
+   .vc-name-link:hover .vc-name {
+     color: var(--vc-accent);
+   }
+   
+   .vc-model {
+     font-size: 12px;
+     color: var(--vc-text-secondary);
+     font-weight: 300;
+     font-style: italic;
+     margin: 0 0 12px;
+   }
+   
+   /* ── Rating ── */
+   .vc-rating {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     margin-bottom: 12px;
+   }
+   
+   .vc-stars {
+     display: flex;
+     gap: 1px;
+   }
+   
+   .vc-star {
+     font-size: 14px;
+     color: var(--vc-text-dim);
+     line-height: 1;
+     transition: color 0.15s;
+   }
+   
+   .vc-star.filled {
+     color: var(--vc-gold);
+   }
+   
+   .vc-star.half {
+     background: linear-gradient(90deg, var(--vc-gold) 50%, var(--vc-text-dim) 50%);
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+     background-clip: text;
+   }
+   
+   .vc-review-count {
+     font-size: 11px;
+     color: var(--vc-text-dim);
+     font-weight: 300;
+   }
+   
+   /* ── Specs ── */
+   .vc-specs {
+     display: flex;
+     gap: 14px;
+     flex-wrap: wrap;
+     margin-bottom: 12px;
+   }
+   
+   .vc-spec {
+     display: flex;
+     align-items: center;
+     gap: 4px;
+     font-size: 12px;
+     color: var(--vc-text-secondary);
+     font-weight: 300;
+   }
+   
+   .vc-spec-icon {
+     font-size: 13px;
+     line-height: 1;
+   }
+   
+   /* ── Fuel Badge ── */
+   .vc-fuel-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+     padding: 4px 10px;
+     border-radius: 20px;
+     font-size: 11px;
+     font-weight: 600;
+     letter-spacing: 0.5px;
+     text-transform: uppercase;
+     margin-bottom: 14px;
+   }
+   
+   .vc-fuel-petrol {
+     background: rgba(255, 107, 53, 0.12);
+     color: var(--vc-accent-2);
+     border: 1px solid rgba(255, 107, 53, 0.25);
+   }
+   
+   .vc-fuel-diesel {
+     background: rgba(100, 100, 130, 0.15);
+     color: #aaa8c0;
+     border: 1px solid rgba(100, 100, 130, 0.25);
+   }
+   
+   .vc-fuel-electric {
+     background: rgba(0, 200, 150, 0.1);
+     color: #2ecc9a;
+     border: 1px solid rgba(0, 200, 150, 0.2);
+   }
+   
+   /* ── Divider ── */
+   .vc-divider {
+     height: 1px;
+     background: var(--vc-border);
+     margin-bottom: 14px;
+   }
+   
+   /* ── Footer ── */
+   .vc-footer {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 12px;
+   }
+   
+   .vc-price-block {
+     display: flex;
+     flex-direction: column;
+     gap: 2px;
+   }
+   
+   /* Rent per hour */
+   .vc-rent {
+     display: flex;
+     align-items: baseline;
+     gap: 2px;
+   }
+   
+   .vc-rent-amount {
+     font-family: var(--vc-font-display);
+     font-size: 22px;
+     color: var(--vc-text-primary);
+     letter-spacing: 0.5px;
+   }
+   
+   .vc-rent-label {
+     font-size: 11px;
+     color: var(--vc-text-dim);
+     font-weight: 300;
+   }
+   
+   /* Buy price row */
+   .vc-buy-price {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+   
+   .vc-original-price {
+     font-size: 11px;
+     color: var(--vc-text-dim);
+     text-decoration: line-through;
+   }
+   
+   .vc-final-price {
+     font-size: 13px;
+     color: var(--vc-accent);
+     font-weight: 600;
+   }
+   
+   /* ── CTA Button ── */
+   .vc-btn {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     background: var(--vc-accent);
+     color: #fff;
+     text-decoration: none;
+     font-family: var(--vc-font-display);
+     font-size: 14px;
+     letter-spacing: 1.5px;
+     padding: 10px 18px 8px;
+     border-radius: var(--vc-radius-sm);
+     transition: background var(--vc-transition), transform 0.2s, box-shadow 0.2s;
+     flex-shrink: 0;
+   }
+   
+   .vc-btn:hover {
+     background: #c1121f;
+     box-shadow: 0 6px 20px rgba(230, 57, 70, 0.45);
+     transform: translateX(2px);
+   }
+   
+   .vc-btn-arrow {
+     transition: transform 0.2s;
+     display: inline-block;
+   }
+   
+   .vc-btn:hover .vc-btn-arrow {
+     transform: translateX(4px);
+   }
+   
+   /* ── Grid Layout Helper ── */
+   .vc-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+     gap: 28px;
+     padding: 32px;
+     background: var(--vc-bg);
+     min-height: 100vh;
+   }
+   
+   /* ── Responsive ── */
+   @media (max-width: 480px) {
+     .vc-card {
+       max-width: 100%;
+     }
+   
+     .vc-image-wrap {
+       height: 180px;
+     }
+   
+     .vc-name {
+       font-size: 24px;
+     }
+   
+     .vc-grid {
+       grid-template-columns: 1fr;
+       padding: 16px;
+       gap: 20px;
+     }
+   }
+   
+   /* ── Animation on mount ── */
+   @keyframes vc-fade-up {
+     from {
+       opacity: 0;
+       transform: translateY(24px);
+     }
+     to {
+       opacity: 1;
+       transform: translateY(0);
+     }
+   }
+   
+   .vc-card {
+     animation: vc-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+   }
+   

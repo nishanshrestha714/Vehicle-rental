@@ -1,0 +1,423 @@
+/*  Page */
+.vp-page {
+    background: #f0f2f8;
+    min-height: 100vh;
+    font-family: "Inter", "Segoe UI", sans-serif;
+  }
+  
+  /*  Back Button */
+  .vp-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: #1a1a2e;
+    border: 1px solid #e0e4ef;
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 22px;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    letter-spacing: 0.3px;
+  }
+  
+  .vp-back-btn:hover {
+    background: #f5f3ff;
+    border-color: #a5b4fc;
+    color: #4f46e5;
+    transform: translateX(-2px);
+  }
+  
+  .vp-back-icon {
+    font-size: 16px;
+  }
+  
+  /*Card Base */
+  .vp-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #e8eaf2;
+    overflow: hidden;
+    height: 100%;
+    transition: border-color 0.2s;
+  }
+  
+  .vp-card:hover {
+    border-color: #c7d2fe;
+  }
+  
+  /* Image Card*/
+  .vp-img-wrap {
+    position: relative;
+    height: 280px;
+    background: #f5f7ff;
+    overflow: hidden;
+  }
+  
+  .vp-vehicle-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  
+  .vp-image-card:hover .vp-vehicle-img {
+    transform: scale(1.03);
+  }
+  
+  .vp-img-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.6px;
+  }
+  
+  .vp-img-footer {
+    padding: 13px 18px;
+    border-top: 1px solid #f0f2fa;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafbff;
+  }
+  
+  .vp-img-meta {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .vp-img-meta:hover {
+    color: #4f46e5;
+  }
+  
+  .vp-heart:hover {
+    color: #e24b4a !important;
+  }
+  
+  /* Detail Card  */
+  .vp-detail-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .vp-name-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .vp-vehicle-name {
+    font-size: 21px;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0;
+    line-height: 1.3;
+  }
+  
+  .vp-ribbon {
+    background: #4f46e5;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 0 0 8px 8px;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  
+  .vp-rating-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .vp-hr {
+    border: none;
+    border-top: 1px solid #f0f2fa;
+    margin: 0;
+  }
+  
+  /*  Price  */
+  .vp-price {
+    font-size: 30px;
+    font-weight: 800;
+    color: #4f46e5;
+    line-height: 1;
+  }
+  
+  .vp-price sup {
+    font-size: 16px;
+    font-weight: 600;
+    vertical-align: super;
+  }
+  
+  .vp-price sub {
+    font-size: 13px;
+    font-weight: 400;
+    color: #9ca3af;
+    vertical-align: baseline;
+    margin-left: 2px;
+  }
+  
+  .vp-tax-note {
+    font-size: 11px;
+    color: #9ca3af;
+    margin: 4px 0 0;
+  }
+  
+  .vp-desc {
+    font-size: 13.5px;
+    color: #6b7280;
+    line-height: 1.75;
+    margin: 0;
+  }
+  
+  /* Tags */
+  .vp-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .vp-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  
+  .vp-tag-green  { background: #d1fae5; color: #065f46; }
+  .vp-tag-red    { background: #fee2e2; color: #7f1d1d; }
+  .vp-tag-blue   { background: #dbeafe; color: #1e40af; }
+  .vp-tag-amber  { background: #fef3c7; color: #92400e; }
+  
+  /*  Features Grid  */
+  .vp-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .vp-feat {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .vp-feat-icon {
+    font-size: 15px;
+  }
+  
+  /*  Booking Card  */
+  .vp-booking-card {
+    padding: 30px 34px;
+  }
+  
+  .vp-booking-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 26px;
+    letter-spacing: 0.3px;
+  }
+  
+  .vp-title-icon {
+    font-size: 20px;
+  }
+  
+  /* Form  */
+  .vp-form-label {
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #374151 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 7px !important;
+  }
+  
+  .vp-lbl-icon {
+    font-size: 13px;
+  }
+  
+  .vp-input {
+    padding: 11px 15px !important;
+    border-radius: 10px !important;
+    border: 1.5px solid #e5e7eb !important;
+    font-size: 14px !important;
+    color: #1a1a2e !important;
+    background: #f9fafb !important;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s !important;
+  }
+  
+  .vp-input:focus {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+    background: #fff !important;
+    outline: none !important;
+  }
+  
+  .vp-input::placeholder {
+    color: #c4c9d4 !important;
+    font-size: 13px !important;
+  }
+  
+  /*  Summary  */
+  .vp-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    border: 1.5px solid #ddd6fe;
+    border-radius: 14px;
+    padding: 20px 28px;
+    margin: 20px 0 22px;
+  }
+  
+  .vp-summary-item {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .vp-summary-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #7c3aed;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 7px;
+  }
+  
+  .vp-summary-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #4f46e5;
+  }
+  
+  .vp-total-price {
+    color: #059669 !important;
+  }
+  
+  .vp-summary-sep {
+    width: 1px;
+    height: 46px;
+    background: #c4b5fd;
+  }
+  
+  /* Submit Button  */
+  .vp-submit-btn {
+    width: 15%;
+    padding: 15px;
+    position: relative;
+    border-radius: 12px;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+  
+  .vp-submit-btn:hover:not(:disabled) {
+    width: 15%;
+    background: #2d2d50;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+  }
+  
+  .vp-submit-btn:active:not(:disabled) {
+    width: 15%;
+    transform: scale(0.99);
+  }
+  
+  .vp-submit-btn:disabled {
+    width: 15%;
+    background: #d1d5db;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .vp-btn-added {
+    background: #059669 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  /*  Responsive */
+  @media (max-width: 768px) {
+    .vp-booking-card {
+      padding: 20px 16px;
+    }
+  
+    .vp-summary {
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+    }
+  
+    .vp-summary-sep {
+      width: 60%;
+      height: 1px;
+      background: #c4b5fd;
+    }
+  
+    .vp-img-wrap {
+      height: 220px;
+    }
+  
+    .vp-vehicle-name {
+      font-size: 18px;
+    }
+  
+    .vp-price {
+      font-size: 24px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .vp-features {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .vp-tags {
+      gap: 6px;
+    }
+    .vp-submit-btn{
+        width: 15%;
+        white-space: nowrap;
+       
+    }
+  }

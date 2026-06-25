@@ -1,0 +1,29 @@
+.custom-about-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-radius: 1rem !important;
+  }
+  
+  .custom-about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .max-w-2xl {
+    max-width: 42rem;
+  }
+  
+  .max-w-xl {
+    max-width: 36rem;
+  }
+  
+  .tracking-wider {
+    letter-spacing: 0.05em;
+  }
+  
+  .tracking-wide {
+    letter-spacing: 0.025em;
+  }
+  
+  .fw-extrabold {
+    font-weight: 800;
+  }

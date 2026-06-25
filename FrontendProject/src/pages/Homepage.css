@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap');
+
+/* ── Base ── */
+.hp-root {
+  font-family: 'DM Sans', sans-serif;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+
+/* ── Hero ── */
+.hp-hero {
+  background: #0a1628;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  padding: 3.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 0 28px 28px;
+
+  /* Background image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Dark overlay on top of the background image */
+.hp-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 0;
+}
+
+.hp-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+
+.hp-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5dcaa5;
+  margin-bottom: 12px;
+}
+
+.hp-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.18;
+  margin-bottom: 14px;
+}
+
+.hp-hero h1 span {
+  color: #5dcaa5;
+}
+
+.hp-hero p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.75;
+  margin-bottom: 24px;
+}
+
+/* ── Hero Buttons ── */
+.hp-hero-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hp-btn-primary {
+  background: #1d9e75;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  padding: 11px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hp-btn-primary:hover {
+  background: #0f6e56;
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.hp-btn-outline {
+  background: transparent;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 11px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.hp-btn-outline:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Hero Stats ── */
+.hp-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 2rem;
+}
+
+.hp-stat-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hp-stat-lbl {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 2px;
+}
+
+/* ── Listing Section ── */
+.hp-section {
+  padding: 2rem 1.25rem;
+}
+
+.hp-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.hp-section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.hp-view-all {
+  font-size: 13px;
+  color: #1d9e75;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.hp-view-all:hover {
+  text-decoration: underline;
+  color: #0f6e56;
+}
+
+/* ── Search ── */
+.hp-search-wrap {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.hp-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #aaa;
+}
+
+.hp-search {
+  width: 100%;
+  padding: 11px 16px 11px 42px;
+  border-radius: 14px;
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: #111;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.hp-search:focus {
+  border-color: #1d9e75;
+}
+
+/* ── Filter Chips ── */
+.hp-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.hp-chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.hp-chip.active {
+  background: #0f6e56;
+  color: #fff;
+  border-color: #0f6e56;
+}
+
+.hp-chip:hover:not(.active) {
+  border-color: #1d9e75;
+  color: #111;
+}
+
+/* ── Sort Bar ── */
+.hp-sort-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 13px;
+  color: #888;
+}
+
+.hp-sort-select {
+  font-size: 13px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  padding: 5px 10px;
+  background: #fff;
+  color: #333;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+
+/* ── Empty State ── */
+.hp-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #aaa;
+  font-size: 14px;
+}

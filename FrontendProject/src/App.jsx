@@ -45,6 +45,8 @@ function App() {
               <Route path="license" element={<LicensePage />} />
               <Route path="booking" element={<BookingPage />} />
               <Route path="rental" element={<RentalPage />} />
+              {/* <Route path="/rental/:bookingId" element={<RentalPage />} /> */}
+
               <Route path="/bookingdetails/:id" element={<BookingDetalis />} />
               <Route path="notFoudpage" element={<NotFoundPage />} />
             </Route>

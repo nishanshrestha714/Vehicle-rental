@@ -238,7 +238,7 @@ const getPaymentDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // ── 1. Find the booking ──────────────────────────────────────────────────
+    // Find the booking 
     const booking = await Booking.findById(id);
 
     if (!booking) {
@@ -247,25 +247,25 @@ const getPaymentDetails = async (req, res) => {
       });
     }
 
-    // ── 2. Build a unique transaction UUID ───────────────────────────────────
+    // Build a unique transaction UUID 
     // Must be unique per payment attempt → append Date.now()
     // IMPORTANT: This same value must be used in both the `message` and `details`
     // const transaction_uuid = `${booking._id}-${Date.now()}`;
     const transaction_uuid = `${booking._id}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
-    // ── 3. Build the signature message ───────────────────────────────────────
+    //Build the signature message 
     // eSewa requires EXACTLY these three fields in this order
     // The transaction_uuid here must match the one sent in `details`
     const message = `total_amount=${booking.totalPrice},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`;
 
-    // ── 4. Generate HMAC-SHA256 signature ────────────────────────────────────
-    // Secret key: "8gBm/:&EnhH.1/q"  ← eSewa sandbox secret (replace in production)
+    // Generate HMAC-SHA256 signature 
+    //  eSewa sandbox secret (replace in production)
     const signature = crypto
       .createHmac("sha256", "8gBm/:&EnhH.1/q")
       .update(message)
       .digest("base64");
 
-    // ── 5. Build the payment details payload ─────────────────────────────────
+    // Build the payment details payload 
     const details = {
       // `amount` = base amount (before tax/charges), `total_amount` = final charged amount
       amount: booking.totalPrice,

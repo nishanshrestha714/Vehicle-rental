@@ -24,10 +24,14 @@ const UserSchema= new mongoose.Schema({
 
     },
     phoneNumber:{
-        type:Number,
+        type:String,
         required:true,
         unique:true,
-         match:/^\+977\d{10}$/ // Validates a 10-digit phone number
+        //  match:/^\d{10}$/ // Validates a 10-digit phone number
+        //accepts both: 9812345303 or +9779812345303
+
+            match: [/^(\+977)?[0-9]{10}$/, "Please enter a valid Nepal phone number"]
+
     },
     
     password:{
@@ -50,7 +54,7 @@ const UserSchema= new mongoose.Schema({
         type:String,
         default:null,// so enpty for otp stack or undifind
 
-       },
+       }, 
        optexpires:{
         type:Date,
         default:null,

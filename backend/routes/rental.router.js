@@ -9,6 +9,6 @@ router.get("/",checkAuth, getAllRentals)
 router.get("/:id",checkAuth,getrentalById);
 router.put("/:id",checkAuth,updateRental);
 router.delete("/:id",checkAuth , deleteRental)
-
+  
 export default router;
 

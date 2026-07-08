@@ -51,6 +51,7 @@
             _id:user._id,
             name:user.name,
             email:user.email,
+              phoneNumber: user.phoneNumber,
             isAdmin:user.isAdmin
         }
         next();

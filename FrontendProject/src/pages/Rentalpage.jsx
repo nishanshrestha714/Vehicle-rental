@@ -12,7 +12,7 @@ import {
   Modal,
 } from "react-bootstrap";
 
-// ── helpers ────────────────────────────────────────────────────────
+// ── helpers 
 const getStatusColor = (status) => {
   switch (status) {
     case "accepted":   return "success";
@@ -32,6 +32,8 @@ function RentalSuccessModal({ booking, show, onClose }) {
   const vehicleImage = Array.isArray(booking.vehicle?.image)
     ? booking.vehicle.image[0]?.url
     : booking.vehicle?.image ?? null;
+
+    
 
   return (
     <Modal show={show} onHide={onClose} centered size="md">
@@ -255,12 +257,14 @@ function BookingCard({ b, onSuccess }) {
           <h5 className="fw-bold mb-0" style={{ color: "#0F1923", fontSize: 17 }}>
             🚗 {b.vehicle?.name ?? "Unknown Vehicle"}
           </h5>
-          <Badge
-            bg={getStatusColor(b.bookingStatus)}
-            style={{ fontSize: 12, padding: "6px 12px", borderRadius: 20 }}
-          >
-            {b.bookingStatus?.toUpperCase()}
-          </Badge>
+ <Badge
+  bg={getStatusColor(b.bookingStatus)}
+  style={{ fontSize: 12, padding: "6px 12px", borderRadius: 20 }}
+>
+  {typeof b.bookingStatus === "string" 
+    ? b.bookingStatus.toUpperCase() 
+    : "UNKNOWN"}
+</Badge>
         </div>
 
         <hr style={{ borderColor: "#EEF3F8", margin: "0 0 16px" }} />

@@ -18,7 +18,7 @@
      --vc-font-body: 'DM Sans', sans-serif;
    }
    
-   /* ── Card Shell ── */
+   /*  Card Shell  */
    .vc-card {
      position: relative;
      display: flex;
@@ -65,7 +65,7 @@
      opacity: 1;
    }
    
-   /* ── Image Section ── */
+   /*  Image Section  */
    .vc-image-link {
      display: block;
      text-decoration: none;
@@ -104,7 +104,7 @@
      );
    }
    
-   /* ── Top Badges ── */
+   /*  Top Badges  */
    .vc-badges-top {
      position: absolute;
      top: 12px;
@@ -134,7 +134,7 @@
      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
    }
    
-   /* ── License Pill ── */
+   /*  License Pill  */
    .vc-license {
      position: absolute;
      bottom: 12px;
@@ -164,7 +164,7 @@
      letter-spacing: 1px;
    }
    
-   /* ── Card Body ── */
+   /*  Card Body  */
    .vc-body {
      padding: 18px 20px 20px;
      display: flex;
@@ -172,7 +172,7 @@
      gap: 0;
    }
    
-   /* ── Brand Row ── */
+   /*  Brand Row  */
    .vc-brand-row {
      display: flex;
      justify-content: space-between;
@@ -194,7 +194,7 @@
      font-weight: 300;
    }
    
-   /* ── Name ── */
+   /*  Name  */
    .vc-name-link {
      text-decoration: none;
    }
@@ -222,7 +222,7 @@
      margin: 0 0 12px;
    }
    
-   /* ── Rating ── */
+   /*  Rating  */
    .vc-rating {
      display: flex;
      align-items: center;
@@ -259,7 +259,7 @@
      font-weight: 300;
    }
    
-   /* ── Specs ── */
+   /*  Specs  */
    .vc-specs {
      display: flex;
      gap: 14px;
@@ -281,7 +281,7 @@
      line-height: 1;
    }
    
-   /* ── Fuel Badge ── */
+   /*  Fuel Badge  */
    .vc-fuel-badge {
      display: inline-flex;
      align-items: center;
@@ -313,14 +313,14 @@
      border: 1px solid rgba(0, 200, 150, 0.2);
    }
    
-   /* ── Divider ── */
+   /*  Divider  */
    .vc-divider {
      height: 1px;
      background: var(--vc-border);
      margin-bottom: 14px;
    }
    
-   /* ── Footer ── */
+   /*  Footer  */
    .vc-footer {
      display: flex;
      align-items: center;
@@ -373,7 +373,7 @@
      font-weight: 600;
    }
    
-   /* ── CTA Button ── */
+   /*  CTA Button  */
    .vc-btn {
      display: inline-flex;
      align-items: center;
@@ -405,7 +405,7 @@
      transform: translateX(4px);
    }
    
-   /* ── Grid Layout Helper ── */
+   /*  Grid Layout Helper  */
    .vc-grid {
      display: grid;
      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -415,7 +415,7 @@
      min-height: 100vh;
    }
    
-   /* ── Responsive ── */
+   /*  Responsive  */
    @media (max-width: 480px) {
      .vc-card {
        max-width: 100%;
@@ -436,7 +436,7 @@
      }
    }
    
-   /* ── Animation on mount ── */
+   /*  Animation on mount  */
    @keyframes vc-fade-up {
      from {
        opacity: 0;

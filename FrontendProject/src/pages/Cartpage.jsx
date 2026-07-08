@@ -33,7 +33,7 @@ function Cartpage() {
   const handleCheckout = () => {
     navigate("/signin?redirect=/shipping");
   };
-
+ 
   const totalItems = CartItems.length;
   const grandTotal = CartItems.reduce((acc, item) => acc + item.totalPrice, 0);
 

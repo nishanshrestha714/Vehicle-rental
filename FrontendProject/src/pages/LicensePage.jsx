@@ -103,9 +103,7 @@
               
 //               {/* Portal Identity Branding Header */}
 //               <div className="text-center mb-4 p-3 bg-light rounded shadow-sm border-start border-4 border-primary">
-//                 <h2 className="fw-bold text-dark m-0" style={{ letterSpacing: "0.5px" }}>
-//                   सवारी चालक अनुमति पत्र विवरण दर्ता
-//                 </h2>
+//               
 //                 <p className="text-muted text-uppercase fw-semibold small m-0 mt-1" style={{ letterSpacing: "1px" }}>
 //                   Driving License Certificate Portal
 //                 </p>
@@ -115,7 +113,7 @@
 //               <Card className="shadow border-0 rounded-3 overflow-hidden">
 //                 <Card.Header className="bg-dark text-white text-center py-3">
 //                   <h5 className="m-0 fw-semibold text-uppercase" style={{ fontSize: "1.05rem", letterSpacing: "0.5px" }}>
-//                     ड्राइभिङ लाइसेन्स विवरण थप्नुहोस्
+//                    
 //                   </h5>
 //                   <small className="text-muted">Fill out your official verified driving license records</small>
 //                 </Card.Header>
@@ -133,7 +131,7 @@
 //                       <Col md={12} className="mb-3">
 //                         <Form.Group controlId="fullnameField">
 //                           <Form.Label className="fw-bold text-secondary small text-uppercase">
-//                             पूरा नाम (Full Name) <span className="text-danger">*</span>
+//                              (Full Name) <span className="text-danger">*</span>
 //                           </Form.Label>
 //                           <Form.Control
 //                             type="text"
@@ -150,7 +148,7 @@
 //                       <Col md={6} className="mb-3">
 //                         <Form.Group controlId="licesneNumberField">
 //                           <Form.Label className="fw-bold text-secondary small text-uppercase">
-//                             लाइसेन्स नम्बर (License Number) <span className="text-danger">*</span>
+//                               (License Number) <span className="text-danger">*</span>
 //                           </Form.Label>
 //                           <Form.Control
 //                             type="text"
@@ -171,7 +169,7 @@
 //                       <Col md={6} className="mb-3">
 //                         <Form.Group controlId="cotegoryField">
 //                           <Form.Label className="fw-bold text-secondary small text-uppercase">
-//                             सवारी वर्ग (Category) <span className="text-danger">*</span>
+//                              (Category) <span className="text-danger">*</span>
 //                           </Form.Label>
 //                           <Form.Select
 //                             name="cotegory"
@@ -192,7 +190,7 @@
 //                       <Col md={4} className="mb-3">
 //                         <Form.Group controlId="deteofBirthField">
 //                           <Form.Label className="fw-bold text-secondary small text-uppercase">
-//                             जन्म मिति (Date of birth) <span className="text-danger">*</span>
+//                             (Date of birth) <span className="text-danger">*</span>
 //                           </Form.Label>
 //                           <Form.Control
 //                             type="date"
@@ -208,7 +206,7 @@
 //                       <Col md={4} className="mb-3">
 //                         <Form.Group controlId="issueDateField">
 //                           <Form.Label className="fw-bold text-secondary small text-uppercase">
-//                             जारी मिति (Issue Date) <span className="text-danger">*</span>
+//                               (Issue Date) <span className="text-danger">*</span>
 //                           </Form.Label>
 //                           <Form.Control
 //                             type="date"
@@ -224,7 +222,7 @@
 //                       <Col md={4} className="mb-3">
 //                         <Form.Group controlId="expiryDateField">
 //                           <Form.Label className="fw-bold text-secondary small text-uppercase">
-//                             नवीकरण मिति (Expiry Date) <span className="text-danger">*</span>
+//                               (Expiry Date) <span className="text-danger">*</span>
 //                           </Form.Label>
 //                           <Form.Control
 //                             type="date"
@@ -368,7 +366,7 @@
 //                             Processing Submission...
 //                           </>
 //                         ) : (
-//                           "विवरण थप्नुहोस् (Submit License)"
+//                           "  (Submit License)"
 //                         )}
 //                       </Button>
 //                     </div>

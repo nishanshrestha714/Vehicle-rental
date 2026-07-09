@@ -23,10 +23,7 @@ const licenseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    deteofBirth: {
-      type: Date,
-      required: true,
-    },
+
     issueDate: {
       type: Date,
       required: true,

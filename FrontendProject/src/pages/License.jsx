@@ -56,104 +56,25 @@ function LicensePage() {
   // ============================================================
   // State Variables
   // ============================================================
-  const [licesneNumber, setlicesneNumber] = useState(""); // ⚠️ Typo: should be licenseNumber
+  const [licesneNumber, setlicesneNumber] = useState(""); //  should be licenseNumber
   const [fullname, setfullname] = useState("");
-  const [deteofBirth, setdeteofBirth] = useState(""); // ⚠️ Typo: should be dateOfBirth
+  // const [deteofBirth, setdeteofBirth] = useState(""); // should be dateOfBirth
   const [issueDate, setissueDate] = useState("");
   const [expiryDate, setexpiryDate] = useState("");
-  const [address, setaddress] = useState("");
-  const [cotegory, setcotegory] = useState(""); // ⚠️ Typo: should be category
-  const [district, setdistrict] = useState("");
+  const [cotegory, setcotegory] = useState(""); // should be category
   const [nagariktaNumber, setnagariktaNumber] = useState("");
   const [loading, setLoading] = useState(false);
-  // ⚠️ BUG 2: licenseLoading from RTK Query is never used — `loading` is a manual duplicate
+  //  licenseLoading from RTK Query is never used — `loading` is a manual duplicate
   //    Best practice: use licenseLoading || uploadLoading instead of manual setLoading
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
 
-  // ✅ selectedFile stores the actual File object for upload and preview
+  //  selectedFile stores the actual File object for upload and preview
   const [selectedFile, setSelectedFile] = useState(null);
 
   // ============================================================
   // Nepal Districts List
   // ============================================================
-  const districts = [
-    "Achham",
-    "Arghakhanchi",
-    "Baglung",
-    "Baitadi",
-    "Bajhang",
-    "Bajura",
-    "Banke",
-    "Bara",
-    "Bardiya",
-    "Bhaktapur",
-    "Bhojpur",
-    "Chitwan",
-    "Dadeldhura",
-    "Dailekh",
-    "Dang",
-    "Darchula",
-    "Dhading",
-    "Dhankuta",
-    "Dhanusa",
-    "Dolakha",
-    "Dolpa",
-    "Doti",
-    "Gorkha",
-    "Gulmi",
-    "Humla",
-    "Ilam",
-    "Jajarkot",
-    "Jhapa",
-    "Jumla",
-    "Kailali",
-    "Kalikot",
-    "Kanchanpur",
-    "Kapilvastu",
-    "Kaski",
-    "Kathmandu",
-    "Kavrepalanchok",
-    "Khotang",
-    "Lalitpur",
-    "Lamjung",
-    "Mahottari",
-    "Makwanpur",
-    "Manang",
-    "Morang",
-    "Mugu",
-    "Mustang",
-    "Myagdi",
-    "Nawalpur",
-    "Nuwakot",
-    "Okhaldhunga",
-    "Palpa",
-    "Panchthar",
-    "Parbat",
-    "Parsa",
-    "Pyuthan",
-    "Ramechhap",
-    "Rasuwa",
-    "Rautahat",
-    "Rolpa",
-    "Rukum East",
-    "Rukum West",
-    "Rupandehi",
-    "Salyan",
-    "Sankhuwasabha",
-    "Saptari",
-    "Sarlahi",
-    "Sindhuli",
-    "Sindhupalchok",
-    "Siraha",
-    "Solukhumbu",
-    "Sunsari",
-    "Surkhet",
-    "Syangja",
-    "Tanahun",
-    "Taplejung",
-    "Terhathum",
-    "Udayapur",
-  ];
+
 
   // ============================================================
   // File Change Handler
@@ -182,7 +103,7 @@ function LicensePage() {
     if (
       !licesneNumber ||
       !fullname ||
-      !deteofBirth ||
+      // !deteofBirth ||
       !cotegory ||
       !expiryDate ||
       !selectedFile
@@ -220,13 +141,11 @@ function LicensePage() {
       const licenseDate = {
         licesneNumber,
         fullname,
-        deteofBirth,
+        // deteofBirth,
         issueDate,
         expiryDate,
         cotegory,
         image: LicenseUpload.image, // ✅ Uses uploaded image URL from server
-        address,
-        district,
         // ⚠️ BUG 3: nagariktaNumber is collected in the form and stored in state
         //    BUT it is missing here — it never reaches the backend!
         //    FIX: add → nagariktaNumber,
@@ -245,12 +164,10 @@ function LicensePage() {
         SaveLicense({
           licesneNumber,
           fullname,
-          deteofBirth,
+          // deteofBirth,
           issueDate,
           expiryDate,
           cotegory,
-          address,
-          district,
           nagariktaNumber,
           _id: res.createlicesne._id, // ⚠️ Will be undefined if backend response shape changes
         }),
@@ -269,7 +186,7 @@ function LicensePage() {
       navigate("/payment");
     } catch (err) {
       console.log(err);
-      // ✅ Shows backend error message if available, otherwise generic fallback
+      //  Shows backend error message if available, otherwise generic fallback
       setStatusMsg({
         type: "danger",
         text:
@@ -295,18 +212,16 @@ function LicensePage() {
             <Col lg={9} md={12}>
               {/* Page Header */}
               <div className="portal-branding-header text-center mb-4">
+               
                 <h2 className="portal-title-text mt-2">
-                  सवारी चालक अनुमति पत्र विवरण दर्ता
-                </h2>
-                <p className="text-muted sub-title">
                   Driving License Certificate Portal
-                </p>
+                </h2>
               </div>
 
               <Card className="shadow-sm portal-card-container">
                 <Card.Header className="bg-white py-3 border-bottom-0">
                   <h4 className="form-section-heading text-center text-dark">
-                    ड्राइभिङ लाइसेन्स विवरण थप्नुहोस् <br />
+                 
                     <small className="text-muted fs-6">
                       Fill out your official verified driving license records
                     </small>
@@ -314,7 +229,7 @@ function LicensePage() {
                 </Card.Header>
 
                 <Card.Body className="px-4 pb-4">
-                  {/* ✅ Shows success or error alert based on statusMsg state */}
+                  {/*  Shows success or error alert based on statusMsg state */}
                   {statusMsg.text && (
                     <Alert variant={statusMsg.type} className="mb-4">
                       {statusMsg.text}
@@ -327,7 +242,7 @@ function LicensePage() {
                       <Col md={12} className="mb-3">
                         <Form.Group controlId="fullNameField">
                           <Form.Label className="fw-semibold">
-                            पूरा नाम (Full Name){" "}
+                            Full Name{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
@@ -344,11 +259,11 @@ function LicensePage() {
                       <Col md={6} className="mb-3">
                         <Form.Group controlId="licenseNoField">
                           <Form.Label className="fw-semibold">
-                            लाइसेन्स नम्बर (License Number){" "}
+                            License Number{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
-                            type="text" // ✅ type="text" so dash format works (type="number" would break it)
+                            type="text" // type="text" so dash format works (type="number" would break it)
                             value={licesneNumber}
                             onChange={(e) => setlicesneNumber(e.target.value)}
                             placeholder="e.g. 12-34-56-78901"
@@ -367,7 +282,7 @@ function LicensePage() {
                       <Col md={6} className="mb-3">
                         <Form.Group controlId="nagariktaNoField">
                           <Form.Label className="fw-semibold">
-                            नागरिकता नम्बर (Nagarikta Number){" "}
+                            Nagarikta Number{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
@@ -387,10 +302,10 @@ function LicensePage() {
                       </Col>
 
                       {/* Date of Birth */}
-                      <Col md={6} className="mb-3">
+                      {/* <Col md={6} className="mb-3">
                         <Form.Group controlId="dateOfBirthField">
                           <Form.Label className="fw-semibold">
-                            जन्म मिति (Date of Birth){" "}
+                            Date of Birth{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
@@ -400,13 +315,13 @@ function LicensePage() {
                             required
                           />
                         </Form.Group>
-                      </Col>
+                      </Col> */}
 
                       {/* Issue Date */}
                       <Col md={6} className="mb-3">
                         <Form.Group controlId="issueDateField">
                           <Form.Label className="fw-semibold">
-                            जारी मिति (Issue Date){" "}
+                            License Issue Date{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
@@ -422,7 +337,7 @@ function LicensePage() {
                       <Col md={6} className="mb-3">
                         <Form.Group controlId="expiryDateField">
                           <Form.Label className="fw-semibold">
-                            नवीकरण मिति (Expiry Date){" "}
+                           License  Expiry Date{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
@@ -434,53 +349,11 @@ function LicensePage() {
                         </Form.Group>
                       </Col>
 
-                      {/* Permanent Address */}
-                      <Col md={6} className="mb-3">
-                        <Form.Group controlId="permanentAddressField">
-                          <Form.Label className="fw-semibold">
-                            स्थायी ठेगाना (Permanent Address){" "}
-                            <span className="text-danger">*</span>
-                          </Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={address}
-                            onChange={(e) => setaddress(e.target.value)}
-                            placeholder="Enter your permanent address"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-
-                      {/* Issue District */}
-                      <Col md={12} className="mb-4">
-                        <Form.Group controlId="issueDistrictField">
-                          <Form.Label className="fw-semibold">
-                            जारी जिल्ला (Issue District){" "}
-                            <span className="text-danger">*</span>
-                          </Form.Label>
-                          <Form.Select
-                            value={district}
-                            onChange={(e) => setdistrict(e.target.value)}
-                            required
-                          >
-                            <option value="">
-                              -- जिल्ला छान्नुहोस् (Select District) --
-                            </option>
-                            {districts.map((dist, idx) => (
-                              // ⚠️ Using idx as key is fine for static lists, but use dist as key for uniqueness
-                              <option key={dist} value={dist.toLowerCase()}>
-                                {dist}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-
                       {/* Vehicle Category */}
                       <Col md={6} className="mb-3">
                         <Form.Group controlId="categoryField">
                           <Form.Label className="fw-semibold">
-                            सवारी वर्ग (Category){" "}
+                            Category{" "}
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Select
@@ -525,7 +398,7 @@ function LicensePage() {
                             License Card Front Copy
                           </Form.Label>
 
-                          {/* ✅ name="image" matches FormData key in handleFileChange */}
+                          {/*  name="image" matches FormData key in handleFileChange */}
                           <Form.Control
                             type="file"
                             name="image"
@@ -536,15 +409,6 @@ function LicensePage() {
 
                           {selectedFile ? (
                             <div className="mt-3 position-relative">
-                              {/* ⚠️ BUG 5: URL.createObjectURL(selectedFile) is called here AND
-                                   again in the card preview below — creates 2 object URLs
-                                   with no revoke, causing a memory leak.
-                                   FIX: Store the URL in state once:
-                                   const [previewUrl, setPreviewUrl] = useState(null);
-                                   then in handleFileChange:
-                                     if (previewUrl) URL.revokeObjectURL(previewUrl);
-                                     setPreviewUrl(URL.createObjectURL(files[0]));
-                                   Then use previewUrl here and in the card preview */}
                               <img
                                 src={URL.createObjectURL(selectedFile)}
                                 alt="License Preview"
@@ -658,7 +522,7 @@ function LicensePage() {
                               )}
                             </Col>
 
-                            {/* Live Preview Info — updates as user types ✅ */}
+                            {/* Live Preview Info — updates as user types  */}
                             <Col xs={8} className="ps-3 text-dark">
                               <div className="mb-1">
                                 <span
@@ -730,7 +594,7 @@ function LicensePage() {
                           </Row>
 
                           {/* Card Footer */}
-                          <div className="mt-3 pt-1 border-top border-secondary border-opacity-25 text-center">
+                          {/* <div className="mt-3 pt-1 border-top border-secondary border-opacity-25 text-center">
                             <small
                               className="text-muted"
                               style={{ fontSize: "9px" }}
@@ -740,7 +604,7 @@ function LicensePage() {
                                 {deteofBirth || "YYYY-MM-DD"}
                               </span>
                             </small>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </Col>
@@ -767,8 +631,10 @@ function LicensePage() {
                             />
                             Processing Submission...
                           </>
+                           /// If loading is true  show the spinner and "Processing Submission..."
+                          // If loading is false  show "Submit License"
                         ) : (
-                          "विवरण थप्नुहोस् (Submit License)"
+                         " Submit License"
                         )}
                       </Button>
                     </div>
@@ -785,32 +651,42 @@ function LicensePage() {
 
 export default LicensePage;
 
-// ============================================================
+
+// Why is "Submit License" inside double quotes?
+
+// Because it is a JavaScript string.
+
+// Inside {}, React expects JavaScript. A string in JavaScript is written with quotes:
+
+
+// 
+
 // BUGS SUMMARY
-// ============================================================
-// BUG 1 🔴 — useLicenseCatagoryMutation imported & destructured but never used
+// 
+
+// BUG 1  — useLicenseCatagoryMutation imported & destructured but never used
 //             Remove or uncomment the category check logic when ready
 //
-// BUG 2 🟡 — licenseLoading / licenseCatagoryLoading / uploadLoading from RTK Query
+// BUG 2  — licenseLoading / licenseCatagoryLoading / uploadLoading from RTK Query
 //             are all unused; manual `loading` state duplicates them
 //             FIX: replace setLoading with → licenseLoading || uploadLoading
 //
-// BUG 3 🔴 — nagariktaNumber was MISSING from licenseDate sent to backend
+// BUG 3  — nagariktaNumber was MISSING from licenseDate sent to backend
 //             User fills the field, it goes to state, but was never sent to API
-//             FIX: added nagariktaNumber to licenseDate object ✅
+//             FIX: added nagariktaNumber to licenseDate object 
 //
-// BUG 4 🟡 — dispatch(SaveLicense) depends on res.createlicesne._id
+// BUG 4  — dispatch(SaveLicense) depends on res.createlicesne._id
 //             If backend changes response shape, _id saves as undefined silently
 //             FIX: guard with if (res?.createlicesne?._id)
 //
-// BUG 5 🟡 — URL.createObjectURL(selectedFile) called TWICE (upload section + card preview)
+// BUG 5  — URL.createObjectURL(selectedFile) called TWICE (upload section + card preview)
 //             Two object URLs created with no revokeObjectURL = memory leak
 //             FIX: store URL in state once, revoke old one in handleFileChange
 //
-// BUG 6 🟡 — No validation that expiryDate > issueDate
-//             FIX: added date comparison check before API call ✅
+// BUG 6  — No validation that expiryDate > issueDate
+//             FIX: added date comparison check before API call 
 //
-// BUG 7 🟡 — statusMsg not cleared at start of new submit
+// BUG 7  — statusMsg not cleared at start of new submit
 //             Old error stays visible even after user fixes input
-//             FIX: added setStatusMsg({ type: "", text: "" }) at top of handler ✅
-// ============================================================
+//             FIX: added setStatusMsg({ type: "", text: "" }) at top of handler 
+// 

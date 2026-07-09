@@ -25,20 +25,20 @@ const addlicense = async (req, res) => {
     const {
       licesneNumber,  
       fullname,
-      deteofBirth,    
+      // deteofBirth,    
       issueDate,
       expiryDate,
       cotegory,       
       image,
-      address,
-      district,
+      // address,
+      // district,
     } = req.body;
 
     //  validate all required fields
     if (
       !licesneNumber ||
       !fullname ||
-      !deteofBirth ||
+      // !deteofBirth ||
       !issueDate ||
       !expiryDate ||
       !cotegory ||
@@ -80,13 +80,13 @@ const addlicense = async (req, res) => {
       user: userId,
       licesneNumber,
       fullname,
-      deteofBirth,
+      // deteofBirth,
       issueDate,
       expiryDate,
       cotegory,
       image,
-      address,
-      district,
+      // address,
+      // district,
       nagariktaNumber: usernagarikta.nagariktaNumber,
       nagarikta: usernagarikta._id,
     });

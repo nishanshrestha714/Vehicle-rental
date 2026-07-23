@@ -1,0 +1,315 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap");
+
+.dx-auth {
+  --dx-cream: #fbf7f0;
+  --dx-cream-dim: #f3ecdf;
+  --dx-ink: #211c16;
+  --dx-ink-soft: #6f6558;
+  --dx-coral: #ff6b4a;
+  --dx-coral-dark: #e0563a;
+  --dx-coral-tint: #ffe7de;
+  --dx-border: #e6ddcd;
+  --dx-danger: #d64545;
+  --dx-white: #ffffff;
+
+  --dx-font-display: "Syne", sans-serif;
+  --dx-font-body: "DM Sans", sans-serif;
+
+  background: var(--dx-cream);
+  font-family: var(--dx-font-body);
+  color: var(--dx-ink);
+  min-height: 100vh;
+}
+
+.dx-auth-shell {
+  min-height: 100vh;
+}
+
+/*  Brand  */
+.dx-brand-row {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.dx-brand {
+  font-family: var(--dx-font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--dx-ink);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.dx-brand span {
+  color: var(--dx-coral);
+}
+
+/*  Form panel  */
+.dx-form-panel {
+  width: 100%;
+  margin: 3rem auto;
+  padding: 2.5rem 2rem;
+  background: var(--dx-white);
+  border: 1.5px solid var(--dx-border);
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px -24px rgba(33, 28, 22, 0.18);
+}
+
+.dx-heading-block {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.dx-eyebrow {
+  font-family: var(--dx-font-body);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dx-coral-dark);
+  margin-bottom: 0.5rem;
+}
+
+.dx-heading-block h1 {
+  font-family: var(--dx-font-display);
+  font-weight: 700;
+  font-size: 1.85rem;
+  line-height: 1.15;
+  color: var(--dx-ink);
+  margin-bottom: 0.65rem;
+}
+
+.dx-subtext {
+  font-size: 0.95rem;
+  color: var(--dx-ink-soft);
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+/*  Fields  */
+.dx-group {
+  margin-bottom: 1.1rem;
+}
+
+.dx-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--dx-ink);
+  margin-bottom: 0.4rem;
+}
+
+.dx-input,
+.dx-input.form-control {
+  background: var(--dx-white);
+  border: 1.5px solid var(--dx-border);
+  border-radius: 0.65rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  color: var(--dx-ink);
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dx-input:focus,
+.dx-input.form-control:focus {
+  border-color: var(--dx-coral);
+  box-shadow: 0 0 0 3px var(--dx-coral-tint);
+}
+
+.dx-input.is-invalid,
+.dx-input.form-control.is-invalid {
+  border-color: var(--dx-danger);
+  background-image: none;
+}
+
+.dx-error {
+  font-size: 0.78rem;
+  color: var(--dx-danger);
+  margin-top: 0.35rem;
+}
+
+/*  Phone field  */
+.dx-phone-wrap {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--dx-border);
+  border-radius: 0.65rem;
+  overflow: hidden;
+  background: var(--dx-white);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dx-phone-wrap:focus-within {
+  border-color: var(--dx-coral);
+  box-shadow: 0 0 0 3px var(--dx-coral-tint);
+}
+
+.dx-phone-prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background: var(--dx-cream-dim);
+  color: var(--dx-ink-soft);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-right: 1.5px solid var(--dx-border);
+}
+
+.dx-input-phone.form-control {
+  border: none;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+/*  Password  */
+.dx-pass-wrap {
+  position: relative;
+}
+
+.dx-eye {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--dx-ink-soft);
+  display: flex;
+  cursor: pointer;
+}
+
+.dx-eye:hover {
+  color: var(--dx-ink);
+}
+
+.dx-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.dx-strength-bars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.dx-strength-bar {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--dx-border);
+}
+
+.dx-strength-bar.is-filled.s-1 { background: var(--dx-danger); }
+.dx-strength-bar.is-filled.s-2 { background: #e8a23c; }
+.dx-strength-bar.is-filled.s-3 { background: #d7b23c; }
+.dx-strength-bar.is-filled.s-4 { background: #4caf6e; }
+
+.dx-strength-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dx-ink-soft);
+  min-width: 40px;
+  text-align: right;
+}
+
+/*  Submit  */
+.dx-btn-primary {
+  width: 100%;
+  background: var(--dx-coral);
+  color: var(--dx-white);
+  border: none;
+  border-radius: 0.65rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--dx-font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.dx-btn-primary:hover:not(:disabled) {
+  background: var(--dx-coral-dark);
+}
+
+.dx-btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.dx-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.dx-spinner {
+  color: var(--dx-white);
+}
+
+.dx-terms {
+  font-size: 0.75rem;
+  color: var(--dx-ink-soft);
+  text-align: center;
+  margin-top: 0.85rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.dx-bottom-link {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.9rem;
+  color: var(--dx-ink-soft);
+}
+
+.dx-link {
+  color: var(--dx-coral-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dx-link:hover {
+  text-decoration: underline;
+}
+
+/*  Responsive  */
+@media (max-width: 991.98px) {
+  .dx-form-panel {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .dx-form-panel {
+    padding: 1.75rem 1.25rem;
+    border-radius: 0.75rem;
+    margin: 1.5rem auto;
+  }
+
+  .dx-heading-block h1 {
+    font-size: 1.55rem;
+  }
+}
+
+/*  Accessibility  */
+.dx-input:focus-visible,
+.dx-eye:focus-visible,
+.dx-btn-primary:focus-visible,
+.dx-link:focus-visible {
+  outline: 2px solid var(--dx-coral-dark);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-btn-primary,
+  .dx-input,
+  .dx-phone-wrap {
+    transition: none;
+  }
+}

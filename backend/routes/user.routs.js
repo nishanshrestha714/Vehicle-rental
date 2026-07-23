@@ -13,7 +13,7 @@ router.put("/update",checkAuth,updateprofile);
 
 router.post("/", (req, res) => {
     console.log(req.body);
-    res.send("ok fine server thik xa la! ");
+    res.send("ok fine server thik xa ! ");
 });
 
 

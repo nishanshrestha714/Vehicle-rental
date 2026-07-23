@@ -19,6 +19,7 @@ const BookingApiSlice = apiSlice.injectEndpoints({
       query:(bookingId)=>({
         url:`${BOOKING_URL}/${bookingId}`
       }),
+      keepUnusedDataFor:5,
     }),
     EsewaPaymentDetails:builder.query({
       query:(id)=>({

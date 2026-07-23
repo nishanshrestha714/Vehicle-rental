@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap");
 
-/* ── Root ── */
+/*  Root  */
 .si-root {
   font-family: "DM Sans", sans-serif;
   background: #f4f6f9;
@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   /* padding: 2.5rem 1.5rem; */
-  background: #1f58ae;
+  /* background: #1f58ae; */
 }
 .si-card {
   width: 90%;
@@ -25,7 +25,7 @@
   position: relative;
 }
 
-/* ── Top signup link ── */
+/*  Top signup link  */
 .si-top-link {
   text-align: right;
   font-size: 13px;
@@ -33,7 +33,7 @@
   margin-bottom: 1.5rem;
 }
 .si-top-link a {
-  color: #1d9e75;
+  color: #442fe7;
 
   font-weight: 600;
   text-decoration: none;
@@ -42,7 +42,7 @@
   text-decoration: underline;
 }
 
-/* ── Heading ── */
+/*  Heading  */
 .si-card h2 {
   font-family: "Syne", sans-serif;
   font-size: 24px;
@@ -56,7 +56,7 @@
   margin-bottom: 1.75rem;
 }
 
-/* ── Form group ── */
+/*  Form group  */
 .si-group {
   margin-bottom: 1.1rem;
 }
@@ -96,7 +96,7 @@
   display: block;
 }
 
-/* ── Password toggle ── */
+/*  Password toggle  */
 .si-pass-wrap {
   position: relative;
 }
@@ -117,11 +117,11 @@
   color: #555;
 }
 
-/* ── Submit button ── */
+/*  Submit button  */
 .si-btn {
   width: 100%;
   padding: 13px;
-  background: #0f6e56;
+  background: #4574eb;
   color: #fff;
   font-family: "Syne", sans-serif;
   font-size: 14px;
@@ -139,7 +139,7 @@
   justify-content: center;
 }
 .si-btn:hover:not(:disabled) {
-  background: #0a5240;
+  background: #282edd;
   transform: translateY(-1px);
 }
 .si-btn:disabled {
@@ -147,7 +147,7 @@
   cursor: not-allowed;
 }
 
-/* ── Spinner ── */
+/*  Spinner  */
 .si-spinner {
   width: 20px;
   height: 20px;
@@ -162,14 +162,14 @@
   }
 }
 
-/* ── Forgot password ── */
+/*  Forgot password  */
 .si-links {
   text-align: center;
   margin-top: 1rem;
   font-size: 13px;
 }
 .si-links a {
-  color: #1d9e75;
+  color: #6410eb;
   font-weight: 500;
   text-decoration: none;
 }
@@ -177,7 +177,7 @@
   text-decoration: underline;
 }
 
-/* ── Social login ── */
+/*  Social login  */
 .si-social {
   margin-top: 1.5rem;
   text-align: center;
@@ -211,7 +211,7 @@
     box-shadow 0.2s;
 }
 .si-social-btn:hover:not(:disabled) {
-  border-color: #1d9e75;
+  border-color: #0b0bcf;
   box-shadow: 0 2px 8px rgba(29, 158, 117, 0.12);
 }
 .si-social-btn:disabled {
@@ -219,7 +219,7 @@
   cursor: not-allowed;
 }
 
-/* ── Mobile ── */
+/*  Mobile  */
 @media (max-width: 767px) {
   .si-right {
     background: #fff;

@@ -207,7 +207,7 @@ const getprofile = async (req, res) => {
     res.status(500).json({ message: "Server error. Please try again." });
   }
 };
-
+ 
 //  Update Profile 
 // updateProfile   logged in user ko details update garchha
 const updateprofile = async (req, res) => {
@@ -288,18 +288,20 @@ const updateprofile = async (req, res) => {
     // pre('save') hook trigger hunchha — password automatically hash hunchha
     await user.save();
 
-    res.status(200).json({
-      message: "Profile updated successfully.",
-      user: {
-        _id:         user._id,
-        name:        user.name,
-        email:       user.email,
-        phoneNumber: user.phoneNumber,
-        isAdmin:     user.isAdmin,
-      },
-    });
+   res.status(200).json({
+  message: "Profile updated successfully.",
+  user: {
+    _id:         user._id,
+    firstName:   user.firstName,
+    lastName:    user.lastName,
+    email:       user.email,
+    phoneNumber: user.phoneNumber,
+    isAdmin:     user.isAdmin,
+  },
+});
 
   } catch (err) {
+      console.error(err);  
     res.status(500).json({ message: "Server error. Please try again." });
   }
 };

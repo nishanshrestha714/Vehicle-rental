@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -95,42 +94,40 @@ function BookingDetails() {
   };
 
   // and then this is payment and booking status check  to true in rental page
-//   const handleRental = () => {
-//   if (!b?.payment?.isPaid) {
-//     alert("Please complete payment first.");
-//     return;
-//   }
+  //   const handleRental = () => {
+  //   if (!b?.payment?.isPaid) {
+  //     alert("Please complete payment first.");
+  //     return;
+  //   }
 
-//   if (!b?.bookingStatus) {
-//     alert("Booking is not confirmed yet.");
-//     return;
-//   }
+  //   if (!b?.bookingStatus) {
+  //     alert("Booking is not confirmed yet.");
+  //     return;
+  //   }
 
-//   navigate(`/rental/${b?._id}`);
-// };
+  //   navigate(`/rental/${b?._id}`);
+  // };
 
+  const handleRental = () => {
+    if (!b) {
+      toast.error("Booking not loaded yet");
+      return;
+    }
 
+    if (b?.payment?.isPaid !== true) {
+      toast.error("Please complete payment first");
+      return;
+    }
 
-const handleRental = () => {
-  if (!b) {
-    toast.error("Booking not loaded yet");
-    return;
-  }
+    // if (!b?.bookingStatus ) {
+    //   toast.error("Booking is not confirmed yet");
+    //   return;
+    // }
 
- if (b?.payment?.isPaid !== true) {
-  toast.error("Please complete payment first");
-  return;
-}
-
-// if (!b?.bookingStatus ) {
-//   toast.error("Booking is not confirmed yet");
-//   return;
-// }
-
-  toast.success("Redirecting to rental...");
-  navigate("/rental");
+    toast.success("Redirecting to rental...");
+    navigate("/rental");
     // navigate(`/rental/${b._id}`);
-};
+  };
 
   // Safe read from Redux — optional chaining prevents crash if empty
   const { Nagariktapage, License } = useSelector((state) => state.cart);
@@ -182,7 +179,7 @@ const handleRental = () => {
 
   return (
     <Container className="py-4">
-      {/* ── Confirmation banner ── */}
+      {/*  Confirmation banner  */}
       <Card
         className="mb-4 border-0 text-white text-center shadow"
         style={{ backgroundColor: "#445135" }}
@@ -224,7 +221,7 @@ const handleRental = () => {
             <InfoRow label="Nagarikta Number">
               {License?.nagariktaNumber}
             </InfoRow>
-            <InfoRow label="Address">{License?.address}</InfoRow>
+            {/* <InfoRow label="Address">{License?.address}</InfoRow> */}
           </Section>
 
           {/* Vehicle */}
@@ -273,17 +270,15 @@ const handleRental = () => {
           {/* Payment */}
           <Section icon={<BsCreditCard2Back />} title="Payment">
             <InfoRow label="Method">
-              <InfoRow label="Method">
-                {b?.payment?.method === "eSewa" ? (
-                  <Badge bg="primary">eSewa</Badge>
-                ) : b?.payment?.method === "Khalti" ? (
-                  <Badge bg="purple" style={{ backgroundColor: "#5C2D91" }}>
-                    Khalti
-                  </Badge>
-                ) : (
-                  <Badge bg="success">Cash on Delivery</Badge>
-                )}
-              </InfoRow>
+              {b?.payment?.method === "eSewa" ? (
+                <Badge bg="primary">eSewa</Badge>
+              ) : b?.payment?.method === "Khalti" ? (
+                <Badge bg="purple" style={{ backgroundColor: "#5C2D91" }}>
+                  Khalti
+                </Badge>
+              ) : (
+                <Badge bg="success">Cash on Delivery</Badge>
+              )}
             </InfoRow>
 
             <InfoRow label="Status">
@@ -316,19 +311,20 @@ const handleRental = () => {
                 Booking Status
               </Card.Header>
               <Card.Body className="py-4">
-                <BsCheckCircleFill size={38} color="#1d9e75" className="mb-2" />
+                <BsCheckCircleFill size={38} color="#1d289e" className="mb-2" />
                 <div className="mb-2">
                   {b?.bookingStatus ? (
                     <Badge bg="success">
-                      bookingStatus on {fmtDate(b?.bookingStatus)}
+                      Booked on {fmtDate(b?.createdAt)}
                     </Badge>
                   ) : (
-                    <Badge bg="danger">Not bookingStatus Yet</Badge>
+                    <Badge bg="danger">Not booked</Badge>
                   )}
                 </div>
-                {/* <div className="text-muted" style={{ fontSize: 12 }}>
-                  Booking ID: <strong className="text-dark">#{id}</strong>
-                </div> */}
+                <div className="text-muted" style={{ fontSize: 12 }}>
+                  Booking :{" "}
+                  <strong className="text-dark">{b?.vehicle?.name}</strong>
+                </div>
               </Card.Body>
             </Card>
 
@@ -367,7 +363,6 @@ const handleRental = () => {
                 <Row>
                   <Col>vehicle price</Col>
                   <Col>
-                    ${" "}
                     {b?.vehicle?.pricePerDay
                       ? `Rs. ${b.vehicle.pricePerDay.toLocaleString()}`
                       : "—"}
@@ -389,22 +384,20 @@ const handleRental = () => {
                   <Button variant="dark" onClick={handleEsewaPayment}>
                     Pay via Esewa
                   </Button>
-
                 </ListGroup.Item>
               )}
-              
-                  <Button
-                    type="button"
 
-                    as={Link}
-                  
-                    variant="danger"
-                    className="w-100 fw-bold py-2"
-                    // disabled={!b?.payment?.isPaid || !b?.bookingStatus}
-                     onClick={handleRental}
-                  >
-                    Go To Rental
-                  </Button>
+              <Button
+                type="button"
+                as={Link} 
+                // to="rental"
+                variant="danger"
+                className="w-100 fw-bold py-2"
+                disabled={!b?.payment?.isPaid || !b?.bookingStatus}
+                onClick={handleRental}
+              >
+                Go To Rental
+              </Button>
             </ListGroup>
           </Card>
         </Col>

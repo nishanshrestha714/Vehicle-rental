@@ -362,6 +362,7 @@ console.log("Booking Found:", booking);
 
       booking.payment.isPaid = true;
 booking.payment.paidAt = Date.now();
+    booking.bookingStatus = true; 
 await booking.save();
 
       return res.redirect(`http://localhost:5173/bookingdetails/${bookingId}`);

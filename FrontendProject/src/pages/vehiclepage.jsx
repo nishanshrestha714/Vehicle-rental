@@ -125,7 +125,7 @@ console.log(CartItems);
               </div>
             </Col>
 
-            {/* ── Detail Column ── */}
+            {/*  Detail Column  */}
             <Col md={6}>
               <div className="vp-card vp-detail-card">
 
@@ -192,7 +192,7 @@ console.log(CartItems);
               </div>
             </Col>
 
-            {/* ── Booking Card ── */}
+            {/*  Booking Card  */}
             <Col md={12}>
               <div className="vp-card vp-booking-card">
 

@@ -8,6 +8,11 @@ const vechilelist = new mongoose.Schema({
         required:true,
         ref:"Userdata"
     },
+      // License:{
+      //     type:mongoose.Schema.Types.ObjectId,
+      //     required:true,
+      //     ref:"License"
+      //   },
      name:{
         type:String,
         required: true,
@@ -20,10 +25,26 @@ const vechilelist = new mongoose.Schema({
         required:true,
         unique:true
      },
+// license: {
+//     type: String,
+//     required: true,
+//     validate: {
+//       validator: function(licenseValue) {
+//         // Map required categories to vehicle types
+//         const allowed = {
+//           bike: ['A', 'A1'],
+//           scooter: ['A', 'A1'],
+//           car: ['B'],
+//           Bus: ['F', 'G']
+//         };
+//         // 'this.vehicleType' gets the chosen vehicle type
+//         return allowed[this.vehicleType]?.includes(licenseValue);
+//       },
+//       message: props => `License category '${props.value}' is not allowed for this vehicle type.`
+//     }
+//   },
 
-     discription:{
-        type:String,
-     },
+    
      vehicleType:{
         type:String,
         required:true,
@@ -31,10 +52,17 @@ const vechilelist = new mongoose.Schema({
         default:"car"
 
      },
+      discription:{
+        type:String,
+     },
      licenseCategory:{
       type:String,
       enum:['A','B','C','D','K'], // A is bike  , B is car , C is truck
       required:true
+     },
+
+     available :{
+      type : Boolean,
      },
 
       brand:{
@@ -54,11 +82,11 @@ const vechilelist = new mongoose.Schema({
       },
       year:{
         type:Number,
-        default:2082/10/12
+        required:true,
       },
 
       mileage:{
-        type:Number,// per km
+        type:String,// per km
         default:10  
       },
       fuelType:{
@@ -99,6 +127,12 @@ const vechilelist = new mongoose.Schema({
       type: Number,
       default: 0,
     },
+    seats:{
+      type:Number,
+      default:2
+
+    },
+
     numReview: {
       type: Number,
       default: 0,

@@ -23,10 +23,19 @@ import { USER_URL } from "../constant";
                         method:"POST"
                     }),
                   }),
+             UserUpdate : builder.mutation({
+                query:(data) =>({
+                    url:`${USER_URL}/update`,
+                    method:"PUT",
+                    body:data
+                }),
+                  invalidatesTags: ["User"], // if you're tagging user data elsewhere
+             }),
+
 
                   
             }
         )
      });
-     export const {useLoginMutation , useRegisterMutation , useLogoutMutation} = userApiSlices;
+     export const {useLoginMutation , useRegisterMutation , useLogoutMutation , useUserUpdateMutation} = userApiSlices;
      

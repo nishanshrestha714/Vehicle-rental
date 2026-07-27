@@ -3,51 +3,35 @@ import License from "../Models/license.model.js";
 import nagarikta from "../Models/nagarikta.model.js";
 import Vehicles from "../Models/vechile.model.js";
 
-
 // ADD LICENSE — called by a regular (non-admin) user
 
 const addlicense = async (req, res) => {
   try {
-    // const userAdmin = req.user.isAdmin;
-
-    // //  This blocks every normal user from adding a license!
-    // //    addlicense should be for USERS, not admins.
-    // //    Only verifylicense() should be admin-only.
-    // //    FIX: Remove this admin check entirely, OR if you want
-    // //         to restrict admins from adding, keep it but flip it.
-
-    // if (!userAdmin) {
-    //   return res
-    //     .status(403)
-    //     .send({ error: "only admin can be verify license" }); // ← THIS is the 403 you're seeing
-    // }
-
     const {
-      licesneNumber,  
+      licesneNumber,
       fullname,
-      // deteofBirth,    
       issueDate,
       expiryDate,
-      cotegory,       
+      cotegory,
       image,
-      // address,
-      // district,
+      nagariktaNumber,
     } = req.body;
 
-    //  validate all required fields
+    // validate all required fields
     if (
       !licesneNumber ||
       !fullname ||
-      // !deteofBirth ||
       !issueDate ||
       !expiryDate ||
       !cotegory ||
-      !image
+      !image ||
+      !nagariktaNumber
     ) {
       return res.status(400).send({ error: "all fields required !" });
     }
-//  Get logged-in user's ID
-    const userId = req.user._id; 
+
+    // Get logged-in user's ID
+    const userId = req.user._id;
 
     // Check if the user has a nagarikta record before creating a license
     const usernagarikta = await nagarikta.findOne({ user: userId });
@@ -57,132 +41,162 @@ const addlicense = async (req, res) => {
       });
     }
 
-        // verify in nagarikta as a admin
 
-    // if (!usernagarikta.verified) {
-    //   return res
+        // if (!usernagarikta.verified) {
+   //   return res
     //     .status(400)
     //     .send({ error: "nagarikta number is not verified!" });
-    // }
-    //check if license already exists for this user
-    //no duplicate check — user could add multiple licenses
+     // }
+     //     //check if license already exists for this user
+   //no duplicate check — user could add multiple licenses
 
-    // const licenseExists = await License.findOne({ user: userId });
-    // if (licenseExists) {
-    //   return res.status(409).json({
-    //     error: "License already exists for this user!",
+   // const licenseExists = await License.findOne({ user: userId });
+   // if (licenseExists) {
+   //   return res.status(409).json({
+   //     error: "License already exists for this user!",
     //   });
     // }
 
 
-    //  Create the license linked to user and their nagarikta
-    const createlicesne = await License.create({
-      user: userId,
-      licesneNumber,
-      fullname,
-      // deteofBirth,
-      issueDate,
-      expiryDate,
-      cotegory,
-      image,
-      // address,
-      // district,
-      nagariktaNumber: usernagarikta.nagariktaNumber,
-      nagarikta: usernagarikta._id,
-    });
+   // nagarikta match test in db in user id to verify
+    if (nagariktaNumber !== usernagarikta.nagariktaNumber) {
+      return res.status(400).send({
+        error: "Nagarikta number does not match your registered record!",
+      });
+    }
+// license match test 
+    const existingLicense = await License.findOne({ user: userId });
+    if (existingLicense && licesneNumber !== existingLicense.licesneNumber) {
+      return res.status(400).send({
+        error:
+          "License number does not match your existing registered license. You cannot change your registered license number.",
+      });
+    }
+    const finalLicesneNumber = existingLicense
+      ? existingLicense.licesneNumber
+      : licesneNumber;
 
-    res
-      .status(201)
-      .send({ message: "your license add in sucessfully!", createlicesne });
+  
+    const createlicesne = await License.findOneAndUpdate(
+      { user: userId },
+      {
+        user: userId,
+        licesneNumber: finalLicesneNumber,
+        fullname,
+        issueDate,
+        expiryDate,
+        cotegory,
+        image,
+        nagariktaNumber: usernagarikta.nagariktaNumber,
+        nagarikta: usernagarikta._id,
+      },
+      { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true },
+    );
+
+    res.status(existingLicense ? 200 : 201).send({
+      message: existingLicense
+        ? "your license updated successfully!"
+        : "your license add in sucessfully!",
+      createlicesne,
+    });
   } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyValue || {})[0] || "field";
+      const value = err.keyValue?.[field];
+      return res.status(409).send({
+        error: `A license with this ${field} (${value}) already exists.`,
+      });
+    }
     res.status(500).send({ error: err.message });
   }
 };
 
-// GET ALL LICENSES  
-//  likely admin only (add auth middleware on route)
+// GET ALL LICENSES
+// likely admin only (add auth middleware on route)
 
 const getAllLicense = async (req, res) => {
   try {
     const alllicense = await License.find()
       .populate("user", "firstName lastName email phoneNumber")
       .populate("nagarikta", "nagariktaNumber");
-
-    // Return empty array instead of 404  no licenses yet is not an error
+// Return empty array instead of 404  no licenses yet is not an error
     if (!alllicense || alllicense.length === 0) {
       return res.status(404).send({ error: "license not found!" });
     }
 
-    res.status(200).send({ message: "all license details", License: alllicense });
+    res
+      .status(200)
+      .send({ message: "all license details", License: alllicense });
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
 };
 
-
-// VERIFY LICENSE  IN ADMIN ONLY  THIS 
-// admin only  correct guard here
+// VERIFY LICENSE — admin only
 const verifylicense = async (req, res) => {
   try {
     const userAdmin = req.user.isAdmin;
 
-    //Only admin can verify a license
+    // Only admin can verify a license
     if (!userAdmin) {
-      return res.status(403).send({ error: "only admin can be verify license" });
+      return res
+        .status(403)
+        .send({ error: "only admin can be verify license" });
     }
 
     const { id } = req.params;
-
-    const verifylicense = await License.findById(id);
-    if (!verifylicense) {
+ 
+  // check in license 
+    const licenseDoc = await License.findById(id);
+    if (!licenseDoc) {
       return res.status(404).send({ error: "license not found!" });
     }
 
-    //  Mark license as verified with timestamp
-    verifylicense.verified = true;
-    verifylicense.verifiedAt = new Date();
-    await verifylicense.save();
+    // Mark license as verified with timestamp
+    licenseDoc.verified = true;
+    licenseDoc.verifiedAt = new Date();
+    await licenseDoc.save();
 
     res.status(200).send({
       message: "license is verified successfully!",
-      verifylicense: verifylicense,
+      verifylicense: licenseDoc,
     });
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
 };
 
-// CHECK CATEGORY MATCH 
-//  license category vs vehicle category
+// CHECK CATEGORY MATCH — license category vs vehicle category
 
 const cotogory = async (req, res) => {
   try {
     const { userId, vehicleId } = req.body;
 
-    //  Find license by user
-     // and then find thee license is license mogodb
+    // Find license by user
+        // and then find thee license is license mogodb
     const licenseFound = await License.findOne({ user: userId });
     if (!licenseFound) {
       return res.status(404).json({ error: "license not found this user!" });
     }
 
-    //  ERROR -  You save as `verified` in verifylicense() above,
-    //     but check `isVerified` here — field name mismatch!
-    //     Fix: use licenseFound.verified (to match your schema/save above)
-    if (!licenseFound.isVerified) {
-      return res.status(400).json({ error: "License number is not verified!" });
+
+    if (!licenseFound.verified) {
+      return res
+        .status(400)
+        .json({ error: "License number is not verified!" });
     }
 
-    //  Find the vehicle
+    // Find the vehicle
     const vehicleFound = await Vehicles.findById(vehicleId);
     if (!vehicleFound) {
       return res.status(404).json({ error: "vehicle not found!" });
     }
- // Typo (consistent with model, ok for now)
-    const licenseCategory = licenseFound.cotegory;   
-    const vehicleCategory = vehicleFound.category;
 
-    //  Compare categories
+    const licenseCategory = licenseFound.cotegory;
+    //vehicle documents store this as `licenseCategory`
+    const vehicleCategory = vehicleFound.licenseCategory;
+
+    // Compare categories
     if (licenseCategory !== vehicleCategory) {
       return res.status(400).json({
         error: `Your license category '${licenseCategory}' does not match vehicle category '${vehicleCategory}'!`,

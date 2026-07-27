@@ -477,6 +477,7 @@ function ProfilePage() {
                     <thead className="table-dark">
                       <tr>
                         <th>Vehicle</th>
+                        <th>V.Number</th>
                         <th>Pickup</th>
                         <th>Drop</th>
                         <th>Date</th>
@@ -509,6 +510,9 @@ function ProfilePage() {
                                 {booked?.vehicle?.name}
                               </span>
                             </div>
+                          </td>
+                            <td style={{ fontSize: "13px" }}>
+                            {booked?.vehicle?.vehicleNumber}
                           </td>
 
                           {/* Pickup */}

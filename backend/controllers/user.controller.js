@@ -107,7 +107,8 @@ const register = async (req, res) => {
   } catch (err) {
     // Unexpected server error
     // err.message directly npathaunu — security leak huna sakcha
-    res.status(500).json({ message: "Server error. Please try again." });
+    console.error(err); 
+    res.status(500).json({err:error?.message });
   }
 };
   

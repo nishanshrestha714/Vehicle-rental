@@ -33,7 +33,7 @@ function Field({ label, value }) {
 function SectionCard({ title, children }) {
   return (
     <Card className="mb-4 shadow-sm border-0 rounded-3">
-      <Card.Header className="bg-black text-white fw-semibold rounded-top-3 py-3">
+      <Card.Header className="bg- text-white fw-semibold rounded-top-3 py-3" style={{background:"#5f5fea"}}>
         {title}
       </Card.Header>
       <Card.Body className="px-4 py-3">
@@ -138,7 +138,7 @@ function BookingPage() {
   };
 
   return (
-    <div className="bg-light min-vh-100 pb-5">
+    <div className="bg-light min-vh-100 pb-5" style={{background:"" }}>
       <CheckOutSteps step1 step2 step3 step4 step5 step6 />
 
       <div className="text-black py-4 mb-4">
@@ -158,7 +158,7 @@ function BookingPage() {
           {/* Left Column */}
           <Col lg={8}>
             {/* Nagarikta */}
-            <SectionCard title="Nagarikta (Citizenship) Details">
+            <SectionCard  title="Nagarikta (Citizenship) Details">
               <Field label="Full Name" value={Nagariktapage?.fullName} />
               <Field
                 label="Citizenship No."
@@ -179,7 +179,7 @@ function BookingPage() {
                 label="Nagarikta Number"
                 value={License?.nagariktaNumber}
               />
-              <Field label="Address" value={License?.address} />
+              {/* <Field label="Address" value={License?.address} /> */}
             </SectionCard>
 
             {/* Rental Details — reads from CartItems[0] */}
@@ -285,7 +285,7 @@ function BookingPage() {
           <Col lg={4}>
             <div className="sticky-top" style={{ top: 24 }}>
               <Card className="shadow-sm border-0 rounded-3">
-                <Card.Header className="bg-danger text-white fw-bold rounded-top-3 py-3">
+                <Card.Header className="bg- text-white fw-bold rounded-top-3 py-3" style={{background:"#6666f5"}} >
                   <PiNotepad /> Order Summary
                 </Card.Header>
                 <Card.Body className="p-4">
@@ -322,7 +322,7 @@ function BookingPage() {
                   />
 
                   <Button
-                    variant="danger"
+                    variant="success"
                     className="w-100 fw-bold py-2"
                     onClick={VehicleBookingHandler}
                     disabled={!agreeTerms || vehicleBookingLoading}

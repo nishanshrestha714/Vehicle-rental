@@ -316,28 +316,7 @@ const getPaymentDetails = async (req, res) => {
   }
 };
 
-// const ComfirmPayment = async(req , res)=>{
-//   try{ 
-//     const {data} = req.query;
-//     const {status , transaction_uuid} = JSON.parse(Buffer.from(data , 'base64').toString ('utf-8'));
-//      if ( status == 'COMPLETE'){
-//        const bookingId = transaction_uuid.split('-')[0];
-//        const booking  = await Booking.findById(bookingId);
-//        booking.isPaid = true;
-//        booking.paidAt = new Date();
-//        await booking.save();
-//        return   res.redirect('http://localhost:5173/booking'+ bookingId )
-//      }
-//     res.json(status);
-
-
-//   }
-//   catch(err) {
-//     console.log({error:err.message});
-//   }
-// }; 
-
-
+// comfirm Payment 
 
 const ComfirmPayment = async (req, res) => {
   try {
@@ -362,7 +341,7 @@ console.log("Booking Found:", booking);
 
       booking.payment.isPaid = true;
 booking.payment.paidAt = Date.now();
-    booking.bookingStatus = true; 
+    // booking.bookingStatus = true; 
 await booking.save();
 
       return res.redirect(`http://localhost:5173/bookingdetails/${bookingId}`);
@@ -389,9 +368,6 @@ await booking.save();
 //       if (!booking) {
 //         return res.status(404).json({ message: 'Booking not found' });
 //       }
-
-
-
 //   }  catch(err){
 //     console.log({error:err.message})
 //   }
@@ -399,18 +375,18 @@ await booking.save();
 
 const BookingComplete = async (req, res) => {
   try {
-    const { bookingId } = req.params;
+    const { id } = req.params; 
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(id);
 
     if (!booking) {
       return res.status(404).json({
+        success: false,
         message: "Booking not found",
       });
     }
 
-    booking.BookingStatus = true;
-
+    booking.bookingStatus = true;
     await booking.save();
 
     return res.status(200).json({

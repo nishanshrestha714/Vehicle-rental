@@ -15,20 +15,41 @@ const BookingApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    getBookingById:builder.query({
-      query:(bookingId)=>({
-        url:`${BOOKING_URL}/${bookingId}`
+    getBookingById: builder.query({
+      query: (bookingId) => ({
+        url: `${BOOKING_URL}/${bookingId}`,
       }),
-      keepUnusedDataFor:5,
+      keepUnusedDataFor: 5,
+      providesTags: ["Booking"],
     }),
-    EsewaPaymentDetails:builder.query({
-      query:(id)=>({
-        url:`${BOOKING_URL}/${id}/get-payment-details`,
+    EsewaPaymentDetails: builder.query({
+      query: (id) => ({
+        url: `${BOOKING_URL}/${id}/get-payment-details`,
       }),
     }),
 
+    getAllbooking: builder.query({
+      query: () => ({
+        url: `${BOOKING_URL}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    CompletedBooking: builder.mutation({
+      query: ({ bookingId }) => ({
+        url: `${BOOKING_URL}/${bookingId}/bookingConfirm`,
+        method: "PUT",
+      }),
+      keepUnusedDataFor: 5,
+      invalidatesTags: ["Booking"],
+    }),
   }),
 });
 
-export const { useVehicleBookingMutation  , useGetMyBookingQuery,useGetBookingByIdQuery , useEsewaPaymentDetailsQuery
+export const {
+  useVehicleBookingMutation,
+  useGetMyBookingQuery,
+  useGetBookingByIdQuery,
+  useEsewaPaymentDetailsQuery,
+  useGetAllbookingQuery,
+  useCompletedBookingMutation
 } = BookingApiSlice;

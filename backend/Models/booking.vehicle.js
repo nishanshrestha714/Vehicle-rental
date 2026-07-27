@@ -79,7 +79,7 @@ const BookingVehicleSchema = new mongoose.Schema(
 
 
     dropLocation: {
-      type: String,
+      type: String, 
       required: true,
       trim: true,
     },

@@ -10,6 +10,8 @@ const VehicleApislice = apiSlice.injectEndpoints({
                 url:VEHICLE_URL
             }),
             keepUnusedDataFor:5,
+            providesTags:["vehicle"],
+
 
         }),
         getVehicleById :builder.query({
@@ -18,10 +20,27 @@ const VehicleApislice = apiSlice.injectEndpoints({
             }),
             keepUnusedDataFor:5,
         }),
+//        CreateVehicle: builder.mutation({
+//   query: () => ({
+//     url: `${VEHICLE_URL}`,
+//     method: "POST",
+//     // data:product,
+//   }),
+//   invalidatesTags: ["vehicle"],
+// }),
+
+CreateVehicle: builder.mutation({
+  query: () => ({
+    url: `${VEHICLE_URL}`,
+    method: "POST",
+    // body: newVehicle,
+  }),
+  invalidatesTags: ["vehicle"],
+}),
         
     }),
 });
 
  //  this is nameing con
- export const {useGetVehicleQuery , useGetVehicleByIdQuery}  = VehicleApislice;
+ export const {useGetVehicleQuery , useGetVehicleByIdQuery , useCreateVehicleMutation}  = VehicleApislice;
 

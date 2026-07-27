@@ -126,29 +126,48 @@ function SigninPage() {
   };
 
   /*  Submit  */
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+const loginHandler = async (e) => {
+  e.preventDefault();
+  
+  if (!validateForm()) return;
 
-    // reset server errors
-    setEmailError("");
-    setPasswordError("");
+  // Reset previous server errors
+  setEmailError("");
+  setPasswordError("");
 
-    try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials(res.user));
-      toast.success("Welcome back! Login successful.");
-      navigate(redirect);
-    } catch (err) {
-      const msg = err?.data?.error || err?.error || "";
-      if (msg === "Email not Found") setEmailError("Email not found");
-      else if (msg === "verify your email first!")
-        setEmailError("Verify your email first!");
-      else if (msg === "Invalid password") setPasswordError("Invalid password");
-      else toast.error(msg || "Login failed. Please try again.");
+  try {
+    const res = await login({ email, password }).unwrap();
+    
+    dispatch(setCredentials(res.user));
+    toast.success(res.message || "Login successful");
+    navigate(redirect || "/");
+    
+  } catch (err) {
+    console.log("Login Error:", err); // helpful for debugging
+
+    // Get error message from possible locations
+    const msg =
+      err?.data?.error ||
+      err?.data?.message ||
+      err?.error ||
+      "Something went wrong. Please try again.";
+
+    const lowerMsg = msg.toLowerCase();
+
+    if (lowerMsg.includes("email not found") || lowerMsg.includes("user not found")) {
+      setEmailError("Email not found");
+    } 
+    else if (lowerMsg.includes("verify your email")) {
+      setEmailError("Please verify your email first!");
+    } 
+    else if (lowerMsg.includes("invalid password") || lowerMsg.includes("wrong password")) {
+      setPasswordError("Invalid password");
+    } 
+    else {
+      toast.error(msg);
     }
-  };
-
+  }
+};
   return (
     <div className="si-root">
       <Row className="g-0 min-vh-100">

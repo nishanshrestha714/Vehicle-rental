@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import {
   useEsewaPaymentDetailsQuery,
   useGetBookingByIdQuery,
+  useCompletedBookingMutation,
 } from "../Slices/BookingApiSlice";
 import { useSelector } from "react-redux";
 import {
@@ -69,8 +70,10 @@ function Section({ icon, title, children }) {
 //  Main Component
 function BookingDetails() {
   const { id } = useParams();
-  const { data: bookingRes, isLoading, error } = useGetBookingByIdQuery(id);
+  const {userInfo} = useSelector((state) => state.auth);
+  const { data: bookingRes, isLoading, error , refetch} = useGetBookingByIdQuery(id);
   const { data: PaymentDetails } = useEsewaPaymentDetailsQuery(id);
+  const [CompletedBooking , {isLoading:bookingLoading}]= useCompletedBookingMutation();
   console.log("this  is payment  details ", PaymentDetails);
   console.log(PaymentDetails?.details);
   console.log("Booking ID:", id);
@@ -157,6 +160,8 @@ function BookingDetails() {
     );
   }
 
+
+
   //  Error state
   if (error) {
     return (
@@ -177,12 +182,42 @@ function BookingDetails() {
   console.log("this is is paid", b?.payment?.isPaid);
   console.log("this is booking status", b?.bookingStatus);
 
+
+  // const CompletedBookingHandler = async ()=>{
+  //   try{
+  //     const bookingId = b?.booking._id;
+  //     console.log( "this booking ID ",bookingId);
+
+  //   }catch(err){
+  //     console.log(err.data.error);
+  //   }
+  // }
+const CompletedBookingHandler = async () => {
+  try {
+    if (!b?._id) {
+      toast.error("Booking ID not found");
+      return;
+    }
+
+    const res = await CompletedBooking({ bookingId: b._id }).unwrap();
+    toast.success(res.message || "Booking marked as completed");
+    refetch();
+  } catch (err) {
+    const errorMessage =
+      err?.data?.message ||
+      err?.data?.error ||
+      err?.message ||
+      "Something went wrong";
+    toast.error(errorMessage);
+  }
+};
+
   return (
     <Container className="py-4">
       {/*  Confirmation banner  */}
       <Card
         className="mb-4 border-0 text-white text-center shadow"
-        style={{ backgroundColor: "#445135" }}
+        style={{ backgroundColor: "#717177" }}
       >
         <Card.Body className="py-4">
           <BsCheckCircleFill size={42} color="#afb3b1" className="mb-2" />
@@ -333,7 +368,7 @@ function BookingDetails() {
                 Actions
               </Card.Header>
               <Card.Body className="d-grid gap-2">
-                <Link to="/" className="btn btn-danger fw-semibold">
+                <Link to="/" className="btn btn-primary fw-semibold">
                   <BsArrowLeft className="me-1" /> Back to Home
                 </Link>
                 <Link
@@ -379,19 +414,43 @@ function BookingDetails() {
                   <Col>{totalAmount.toLocaleString()} </Col>
                 </Row>
               </ListGroup.Item>
-              {b.paymentMethod != "COD" && !b?.payment?.isPaid && (
-                <ListGroup.Item className="m-1 d-flex gap-5">
-                  <Button variant="dark" onClick={handleEsewaPayment}>
-                    Pay via Esewa
-                  </Button>
-                </ListGroup.Item>
-              )}
+           {/* {b.paymentMethod === "eSewa" && !b?.payment?.isPaid && !userInfo.isAdmin && (
+  <ListGroup.Item className="m-1 d-flex gap-5">
+    <Button variant="dark" onClick={handleEsewaPayment}>
+      Pay via Esewa
+    </Button>
+  </ListGroup.Item>
+)} */}
+
+{b?.payment?.method === "eSewa" && !b?.payment?.isPaid && !userInfo.isAdmin && (
+  <ListGroup.Item className="m-1 d-flex gap-5">
+    <Button variant="success" onClick={handleEsewaPayment}>
+      Pay via Esewa
+    </Button>
+  </ListGroup.Item>
+)}
+   {userInfo?.isAdmin && (
+  <ListGroup.Item>
+    <Button
+      variant={b?.bookingStatus ? "success" : "dark"}
+      disabled={b?.bookingStatus === true || bookingLoading}
+      onClick={CompletedBookingHandler}
+    >
+      {bookingLoading
+        ? "Processing..."
+        : b?.bookingStatus
+        ? "Already Completed"
+        : "Mark as Completed"}
+    </Button>
+  </ListGroup.Item>
+
+)}
 
               <Button
                 type="button"
                 as={Link} 
                 // to="rental"
-                variant="danger"
+                variant="primary"
                 className="w-100 fw-bold py-2"
                 disabled={!b?.payment?.isPaid || !b?.bookingStatus}
                 onClick={handleRental}

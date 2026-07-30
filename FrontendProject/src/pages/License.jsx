@@ -131,7 +131,7 @@ function LicensePage() {
         }),
       );
 
-      toast.success("License saved successfully");
+      toast.success(res.message || " License add sucessfully!");
 
       // LicenseCatagory check is commented out — uncomment when ready
       // const catagorycheck = await LicenseCatagory({
@@ -159,9 +159,9 @@ function LicensePage() {
 
       <div className="gov-portal-wrapper">
         {/* Top Banner */}
-        <div className="gov-top-bar text-white d-flex justify-content-between align-items-center">
+        {/* <div className="gov-top-bar text-white d-flex justify-content-between align-items-center">
           <h4>License Verify Page</h4>
-        </div>
+        </div> */}
 
         <Container className="my-5">
           <Row className="justify-content-center">
@@ -407,8 +407,8 @@ function LicensePage() {
                           style={{
                             maxWidth: "450px",
                             background:
-                              "linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%)",
-                            borderTop: "6px solid #0d6efd",
+                              "linear-gradient(135deg, #eef2f3 0%, #eaedef 100%)",
+                            borderTop: "6px solid #b7d0f6",
                             fontFamily: "sans-serif",
                             minHeight: "240px",
                           }}
@@ -442,14 +442,13 @@ function LicensePage() {
 
                           {/* Card Body */}
                           <Row className="g-0 align-items-center">
-                            {/* Photo Preview — BUG 5 applies here too (second createObjectURL call) */}
                             <Col
                               xs={4}
                               className="pe-3 text-center border-end border-secondary border-opacity-50"
                             >
                               {selectedFile ? (
                                 <img
-                                  src={URL.createObjectURL(selectedFile)} // ⚠️ BUG 5: second call — use previewUrl state instead
+                                  src={URL.createObjectURL(selectedFile)} //  second call  use previewUrl state instead
                                   alt="User Avatar"
                                   className="img-fluid rounded"
                                   style={{
@@ -468,7 +467,7 @@ function LicensePage() {
                               )}
                             </Col>
 
-                            {/* Live Preview Info — updates as user types  */}
+                            {/* Live Preview Info  updates as user types  */}
                             <Col xs={8} className="ps-3 text-dark">
                               <div className="mb-1">
                                 <span

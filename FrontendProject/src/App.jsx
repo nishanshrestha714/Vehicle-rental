@@ -34,6 +34,10 @@ import BookingPageLists from "./pages/AdminPage/BookingListPage";
 // Fallback
 import NotFoundPage from "./components/NotFound";
 import VehicleListPage from "./pages/AdminPage/VehicleListPage";
+import Nagariktas from "./pages/AdminPage/nagarikta";
+import Licenses from "./pages/AdminPage/Licenses";
+import AdminNagariktaDetailPage from "./pages/AdminPage/adminNagariktaDetailsPage";
+
 
 function App() {
   return (
@@ -70,10 +74,18 @@ function App() {
 
             <Route path="vehicle/:id" element={<Vehiclepage />} />
 
-            {/*  Admin-only routes  */}
+            {/*  Admin-only routes  */} 
             <Route path="admin" element={<AdminPage />}>
               <Route path="bookings" element={<BookingPageLists />} />
               <Route path="vehicles" element={<VehicleListPage />} />
+              <Route path="nagarikta" element={<Nagariktas />} />
+              <Route path="nagarikta/:id" element={<AdminNagariktaDetailPage />} />
+
+
+          
+              <Route path="license" element={<Licenses />} />
+             
+
 
               
             </Route>

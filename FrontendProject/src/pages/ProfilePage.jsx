@@ -561,7 +561,7 @@ function ProfilePage() {
                           {/* Action */}
                           <td>
                             <Link
-                              to={`/booking/${booked._id}`}
+                              to={`/bookingdetails/${booked._id}`}
                               className="btn btn-dark btn-sm"
                             >
                               Details

@@ -13,13 +13,14 @@ const NagariktaApiSlice = apiSlice.injectEndpoints({
       //tells cache to refresh
       invalidatesTags: ["Nagarikta"],
     }),
+    
     getMyNagariktaStatus: builder.query({
       query: () => ({
         url: `${NAGARIKTA_URL}/mystatus`,
       }),
       keepUnusedDataFor: 10,
       //marks cached data
-      providesTags: ["Nagarikta"],
+      providesTags: ["Nagarikta"],  
     }),
     // only admin view in this user nagarikta details
     getAllNagarikta: builder.query({
@@ -45,7 +46,28 @@ const NagariktaApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Nagarikta"],
     }),
+
+    searchNagarikta: builder.query({
+  query: (nagariktaNumber) => ({
+    url: `${NAGARIKTA_URL}/search`,
+    params: { nagariktaNumber },
   }),
+  providesTags: ["Nagarikta"],
+}),
+
+
+getNagariktaById: builder.query({
+  query: (id) => ({
+    url: `${NAGARIKTA_URL}/${id}`,
+  }),
+  providesTags: ["Nagarikta"],
+}),
+
+
+
+  }),
+
+
 });
 
 export const {
@@ -54,6 +76,8 @@ export const {
   useGetAllNagariktaQuery,
   useVerifyNagariktaMutation,
   useDeleteNagariktaMutation,
+   useSearchNagariktaQuery,
+   useGetNagariktaByIdQuery
 } = NagariktaApiSlice;
 
 // builder.query()    → providesTags    (data dinxa)

@@ -86,6 +86,12 @@ function Header() {
                        <NavDropdown.Item as={NavLink} to="/admin/vehicles">
                       Vehicles
                     </NavDropdown.Item>
+                      <NavDropdown.Item as={NavLink} to="/admin/nagarikta">
+                      Nagarita-Pages
+                    </NavDropdown.Item>
+                      <NavDropdown.Item as={NavLink} to="/admin/license">
+                      License-Page
+                    </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item
                       onClick={() => {

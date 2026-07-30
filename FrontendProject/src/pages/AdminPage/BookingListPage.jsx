@@ -1,7 +1,7 @@
 
 import { Table, Col, Badge, Card, Button } from "react-bootstrap";
 import Loader from "../../components/Loader";
-import ErrorMessage from "../../components/ErrorMessage";
+import ErrorMessage from "../../components/ErrorMessage"; 
 import { Link } from "react-router";
 import { useGetAllbookingQuery } from "../../Slices/BookingApiSlice";
 import {FaTimes} from "react-icons/fa"

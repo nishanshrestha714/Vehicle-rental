@@ -9,10 +9,10 @@ router.get("/", getVehicles);
 router.post("/" ,checkAuth,checkAdmin,addVechiles);
 router.get("/:id", getVehicleById);
 router.post("/:vehicleId/review", checkAuth , addreview);
-router.put("/:id", checkAuth,checkAdmin,UpdateVehicle);
+router.put("/:id", checkAuth,checkAdmin,UpdateVehicle); 
 router.delete("/:id/delete", checkAuth, checkAdmin,deleteVehicle)
 
-
+  
 
 export default router;
  

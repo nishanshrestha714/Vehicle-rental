@@ -42,7 +42,7 @@
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--vx-coral);
+  color: black;
   font-weight: 700;
 }
 
@@ -103,7 +103,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--vx-coral);
+  /* background: var(--vx-coral); */
+  background:rgb(88, 88, 222) ; 
   color: var(--vx-white);
   border: none;
   border-radius: 10px;
@@ -117,7 +118,7 @@
 }
 
 .vx-add-btn:hover {
-  background: var(--vx-coral-dark);
+  background:blue ;
   transform: translateY(-1px);
 }
 
@@ -212,12 +213,12 @@
 }
 
 .vx-row {
-  border-top: 1px solid var(--vx-border);
+  border-top: 1px solid rgb(191, 178, 178) ;
   transition: background 0.12s;
 }
 
 .vx-row:hover {
-  background: #fff9f3;
+  background: #d7d6d6;
 }
 
 .vx-vehicle-cell {
@@ -250,8 +251,8 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  background: var(--vx-cream);
-  border: 1px solid var(--vx-border);
+  background: white;
+  border: 1px solid rgb(229, 229, 233);
   border-radius: 6px;
   padding: 4px 8px;
   color: var(--vx-ink);
@@ -271,7 +272,7 @@
   font-size: 12px;
   font-weight: 600;
   text-transform: capitalize;
-  color: var(--vx-coral);
+  color: var(--vx-sage);
 }
 
 .vx-price {
@@ -287,7 +288,7 @@
 }
 
 .vx-pin {
-  color: var(--vx-coral);
+  color: var(--vx-ink-soft);
 }
 
 .vx-stock {
@@ -344,7 +345,7 @@
   border-color: var(--vx-rust);
 }
 
-/* ---------- Cards (mobile) ---------- */
+/*  Cards (mobile)  */
 .vx-cards {
   display: none;
   flex-direction: column;
@@ -451,7 +452,7 @@
   color: var(--vx-ink);
 }
 
-/* ---------- Responsive breakpoints ---------- */
+/*  Responsive breakpoints  */
 @media (max-width: 860px) {
   .vx-table {
     display: none;

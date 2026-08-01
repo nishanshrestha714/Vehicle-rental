@@ -54,7 +54,7 @@ const licenseSchema = new mongoose.Schema(
     },
     nagarikta: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "nagarikta",
+      ref: "Nagarikta",
     },
 
     verified: {
@@ -63,7 +63,7 @@ const licenseSchema = new mongoose.Schema(
     },
     verifiedAt: {
       type: Date,
-    },
+    }, 
   },
   { timestamps: true },
 );

@@ -37,6 +37,8 @@ import VehicleListPage from "./pages/AdminPage/VehicleListPage";
 import Nagariktas from "./pages/AdminPage/nagarikta";
 import Licenses from "./pages/AdminPage/Licenses";
 import AdminNagariktaDetailPage from "./pages/AdminPage/adminNagariktaDetailsPage";
+import AdminLicenseDetailPage from "./pages/AdminPage/adminLicenseDetailsPage";
+import VehicleEditPage from "./pages/AdminPage/pages/VehicleEditPage";
 
 
 function App() {
@@ -80,14 +82,10 @@ function App() {
               <Route path="vehicles" element={<VehicleListPage />} />
               <Route path="nagarikta" element={<Nagariktas />} />
               <Route path="nagarikta/:id" element={<AdminNagariktaDetailPage />} />
-
-
-          
               <Route path="license" element={<Licenses />} />
-             
+              <Route path="license/:id/verify" element={<AdminLicenseDetailPage />} />
+              <Route path="vehicle/:id/edit" element={<VehicleEditPage />} />
 
-
-              
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>

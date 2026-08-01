@@ -1,6 +1,6 @@
 import { Table, Badge, Button, Image } from "react-bootstrap";
 import Loader from "../../components/Loader";
-import ErrorMessage from "../../components/ErrorMessage";
+import ErrorMessage from "../../components/ErrorMessage"; 
 import { Link } from "react-router";
 import { useGetAllNagariktaQuery } from "../../Slices/NagariktaApiSlice";
 // import NavLink from "react-bootstrap";

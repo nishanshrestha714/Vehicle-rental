@@ -113,14 +113,23 @@ const addlicense = async (req, res) => {
 
 // GET ALL LICENSES
 // likely admin only (add auth middleware on route)
-
 const getAllLicense = async (req, res) => {
   try {
+    const userAdmin = req.user.isAdmin;
+
+    // Only admin can view all licenses
+    if (!userAdmin) {
+      return res
+        .status(403)
+        .send({ error: "only admin can view all licenses" });
+    }
+
     const alllicense = await License.find()
       .populate("user", "firstName lastName email phoneNumber")
       .populate("nagarikta", "nagariktaNumber");
-// Return empty array instead of 404  no licenses yet is not an error
-    if (!alllicense || alllicense.length === 0) {
+
+    // Return empty array instead of 404 — no licenses yet is not an error
+    if (!alllicense) {
       return res.status(404).send({ error: "license not found!" });
     }
 
@@ -132,11 +141,35 @@ const getAllLicense = async (req, res) => {
   }
 };
 
+// GET MY LICENSE — logged-in user's own license record
+const getMyLicense = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const myLicense = await License.findOne({ user: userId }).populate(
+      "nagarikta",
+      "nagariktaNumber fullName issueDistrict",
+    ).populate("user", "firstName lastName email phoneNumber");
+
+    if (!myLicense) {
+      return res.status(404).send({ error: "license not found, please add your license first!" });
+    }
+
+    res.status(200).send({
+      message: "your license detail",
+      license: myLicense,
+    });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+};
+
+
 // VERIFY LICENSE — admin only
 const verifylicense = async (req, res) => {
   try {
     const userAdmin = req.user.isAdmin;
-
+ 
     // Only admin can verify a license
     if (!userAdmin) {
       return res
@@ -165,6 +198,9 @@ const verifylicense = async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 };
+
+
+
 
 // CHECK CATEGORY MATCH — license category vs vehicle category
 
@@ -213,4 +249,4 @@ const cotogory = async (req, res) => {
   }
 };
 
-export { addlicense, getAllLicense, verifylicense, cotogory };
+export { addlicense, getAllLicense,    getMyLicense,verifylicense, cotogory };

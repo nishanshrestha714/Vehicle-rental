@@ -12,11 +12,17 @@ import {
 import {
   useGetVehicleQuery,
   useCreateVehicleMutation,
+  useDeleteVehicleMutation,
 } from "../../Slices/VehicleApislice";
 import { toast } from "react-toastify";
 import "./VehicleListPage.css";
+import { FaStar } from "react-icons/fa";
+import { Link } from "react-router";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router";
 
-// Renders the right icon for a vehicle's fuel type (electric gets a charging bolt instead of a pump)
+
+// Renders the right icon for a vehicle's fuel type 
 function FuelIcon({ type, ...props }) {
   return type === "electric" ? (
     <FaChargingStation {...props} />
@@ -27,11 +33,13 @@ function FuelIcon({ type, ...props }) {
 
 function VehicleListPage() {
   const { data, isLoading, error, refetch } = useGetVehicleQuery();
-  const [CreateVehicle, { isLoading: createLoading }] =
-    useCreateVehicleMutation();
+  const vehicles = data?.vehicles  || data || [];
+   console.log(vehicles)
+  const [CreateVehicle, { isLoading: createLoading }] = useCreateVehicleMutation();
+  const [deleteVehicle , {isLoading:isDeleteLoading}] = useDeleteVehicleMutation();
   const [query, setQuery] = useState("");
 
-  const vehicles = data?.vehicles || [];
+  
 
   const filtered = useMemo(() => {
     if (!query.trim()) return vehicles;
@@ -45,17 +53,6 @@ function VehicleListPage() {
 
   const CreateVehicleHanler = async () => {
     try {
-      // ❌ BEFORE (the bug): CreateVehicle() — called with NO argument.
-      //    RTK Query then sends the POST request with an empty/undefined body.
-      //    On the backend, addVechiles does:
-      //        const { name, vehicleNumber, ... } = req.body;
-      //    Since req.body was undefined, destructuring it threw:
-      //    "Cannot destructure property 'name' of 'req.body' as it is undefined"
-      //
-      // ✅ AFTER (the fix): CreateVehicle({}) — pass an empty object as the body.
-      //    Now req.body = {} on the backend, destructuring succeeds (each field
-      //    comes back as undefined), and addVechiles' `field ? field : "default"`
-      //    fallbacks fill in the sample values instead of crashing.
       const res = await CreateVehicle({}).unwrap();
 
       toast.success(res.message || "vehicle add in successfull!");
@@ -65,6 +62,35 @@ function VehicleListPage() {
       toast.error(err?.data?.error || "Failed to add vehicle");
     }
   };
+  const DeleteVehicleHaldler = async (VehicleId) =>{
+    try{
+      if(window.confirm("Are you  sure you want to delete Vehicle")) {
+    const res = deleteVehicle({VehicleId}).unwrap();
+    toast.success(res.message);
+      }
+
+    }
+    catch(err){
+      toast.error(err.data.error);
+      console.log("THIS IS ERROR",err.data.error);
+    }
+  };
+
+
+  const navigate = useNavigate(); 
+  const editHandler = async () =>{
+    try{
+      if(window.confirm("Are you sure !")) {
+        // const res  = 
+        navigate (`/admin/vehicle/${vehicles._id}/edit`)
+
+      };
+
+
+    }catch(err){
+      toast.error(err.data.error);
+    }
+  }
 
   return (
     <div className="vx-page">
@@ -78,7 +104,7 @@ function VehicleListPage() {
               {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""} listed
               across your fleet
             </p>
-          </div>
+          </div> 
 
           <div className="vx-toolbar-actions">
             <div className="vx-search-wrap">
@@ -102,13 +128,13 @@ function VehicleListPage() {
         </div>
 
         {/* Loading */}
-        {isLoading && (
+        {/* {isLoading && (
           <div className="vx-skeleton-wrap">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="vx-skeleton-row" />
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Error */}
         {!isLoading && error && (
@@ -137,7 +163,7 @@ function VehicleListPage() {
           <>
             <div className="vx-table-wrap vx-table">
               <table className="vx-table-el">
-                <thead>
+                {/* <thead>
                   <tr>
                     {[
                       "Vehicle",
@@ -158,7 +184,22 @@ function VehicleListPage() {
                       </th>
                     ))}
                   </tr>
-                </thead>
+                </thead> */}
+
+                <thead className="table-dark">
+  <tr>
+    <th>Vehicle</th>
+    <th>Plate</th>
+    <th>Type</th>
+    <th>Fuel</th>
+    <th>Rent/Hr</th>
+    <th>Location</th>
+    <th>Stock</th>
+    <th>Rating</th>
+    <th>Action</th>
+  </tr>
+</thead>
+
                 <tbody>
                   {filtered.map((vehicle) => (
                     <tr key={vehicle._id} className="vx-row">
@@ -207,13 +248,20 @@ function VehicleListPage() {
                             : "Out of stock"}
                         </span>
                       </td>
-                      <td className="vx-rating">★ {vehicle.rating ?? "—"}</td>
+                      <td className="vx-rating"><FaStar/> {vehicle.rating ?? "—"}</td>
                       <td>
                         <div className="vx-actions">
-                          <button className="vx-icon-btn" title="Edit">
+                          <button className="vx-icon-btn" title="Edit" 
+                            // as={Link}
+                            // to={`/admin/vehicle/${vehicle._id}/edit`}
+                            // onClick={()=> editHandler(vehicle._id)}
+                                                      onClick={() => editHandler(vehicle._id)}
+
+                          >
                             <FaEdit size={13} />
                           </button>
-                          <button className="vx-icon-btn danger" title="Delete">
+                          <button className="vx-icon-btn danger" title="Delete" 
+                          onClick={()=> DeleteVehicleHaldler(vehicle._id)}>
                             <FaTrash size={13} />
                           </button>
                         </div>

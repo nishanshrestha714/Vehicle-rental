@@ -306,7 +306,7 @@ const deleteVehicle = async (req, res) => {
       .status(500)
       .send({ error: "failed to delete vehicle!", error: err.message });
   }
-};
+}; 
 
 export {
   getVehicles,

@@ -34,7 +34,7 @@ const NagariktaApiSlice = apiSlice.injectEndpoints({
     verifyNagarikta: builder.mutation({
       query: (id) => ({
         url: `${NAGARIKTA_URL}/${id}/verify`,
-        method: "PUT",
+        method: "PUT", 
       }),
         invalidatesTags: ["Nagarikta"],
     }),

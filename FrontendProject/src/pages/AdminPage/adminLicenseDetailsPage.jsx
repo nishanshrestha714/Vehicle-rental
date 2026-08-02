@@ -39,9 +39,9 @@ function AdminLicenseDetailPage() {
 
   const handleVerify = async () => {
     try {
-      await verifyLicense(id).unwrap();
+       const res = await verifyLicense(id).unwrap();
       setJustVerified(true);
-      toast.success("License verified successfully");
+      toast.success( res.message || "License verified successfully");
       refetch();
     } catch (err) {
       toast.error(err?.data?.error || err?.data?.message || "Failed to verify");
@@ -96,7 +96,7 @@ function AdminLicenseDetailPage() {
               bg={isVerified ? "success" : "warning"}
               className="fs-6 px-3 py-2"
             >
-              {isVerified ? "✓ Completed" : "Pending Review"}
+              {isVerified ? " Completed" : "Pending Review"}
             </Badge>
           </div>
         </Card.Header>
@@ -166,7 +166,8 @@ function AdminLicenseDetailPage() {
           </Row>
 
           {/* Linked Nagarikta (populated) */}
-          {license.nagarikta && typeof license.nagarikta === "object" && (
+          {/* {license.nagarikta && typeof license.nagarikta === "object" && ( */}
+          {license.nagarikta && (
             <>
               <h6 className="text-uppercase text-muted mb-3 fw-semibold">
                 Linked Nagarikta
@@ -203,7 +204,7 @@ function AdminLicenseDetailPage() {
                   {license.image ? (
                     <a
                       href={license.image}
-                      target="_blank"
+                      target="_blank" 
                       rel="noopener noreferrer"
                     >
                       <Image
@@ -246,12 +247,12 @@ function AdminLicenseDetailPage() {
                     Verifying...
                   </>
                 ) : (
-                  "✓ Verify License"
+                  " Verify License"
                 )}
               </Button>
             ) : (
               <Button variant="success" size="lg" className="px-4" disabled>
-                ✓ Verified — Completed
+                 Verified — Completed
               </Button>
             )}
           </div>

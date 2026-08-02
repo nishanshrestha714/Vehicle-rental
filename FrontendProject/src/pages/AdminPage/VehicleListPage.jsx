@@ -39,7 +39,6 @@ function VehicleListPage() {
   const [deleteVehicle , {isLoading:isDeleteLoading}] = useDeleteVehicleMutation();
   const [query, setQuery] = useState("");
 
-  
 
   const filtered = useMemo(() => {
     if (!query.trim()) return vehicles;
@@ -255,8 +254,7 @@ function VehicleListPage() {
                             // as={Link}
                             // to={`/admin/vehicle/${vehicle._id}/edit`}
                             // onClick={()=> editHandler(vehicle._id)}
-                                                      onClick={() => editHandler(vehicle._id)}
-
+                              onClick={() => editHandler(vehicle._id)} 
                           >
                             <FaEdit size={13} />
                           </button>

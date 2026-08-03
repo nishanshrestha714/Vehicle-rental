@@ -291,6 +291,62 @@ const UpdateVehicle = async (req, res) => {
   }
 };
 
+
+// const UpdateVehicle = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const body = req.body || {};
+
+//     const vehicle = await Vehicles.findById(id).populate(
+//       "user",
+//       "firstName lastName email -_id"
+//     );
+
+//     if (!vehicle) {
+//       return res.status(404).json({ error: "Vehicle not found!" });
+//     }
+
+//     // Update only fields that were sent
+//     if (body.name !== undefined) vehicle.name = body.name;
+//     if (body.vehicleNumber !== undefined) vehicle.vehicleNumber = body.vehicleNumber;
+//     if (body.discription !== undefined) vehicle.discription = body.discription;
+//     if (body.description !== undefined) vehicle.discription = body.description; // alias
+//     if (body.vehicleType !== undefined) vehicle.vehicleType = body.vehicleType;
+//     if (body.brand !== undefined) vehicle.brand = body.brand;
+//     if (body.gearSystem !== undefined) vehicle.gearSystem = body.gearSystem;
+//     if (body.model !== undefined) vehicle.model = body.model;
+//     if (body.year !== undefined) vehicle.year = body.year;
+//     if (body.mileage !== undefined) vehicle.mileage = body.mileage;
+//     if (body.fuelType !== undefined) vehicle.fuelType = body.fuelType;
+//     if (body.engineCC !== undefined) vehicle.engineCC = body.engineCC;
+//     if (body.price !== undefined) vehicle.price = body.price;
+//     if (body.discountPrice !== undefined) vehicle.discountPrice = body.discountPrice;
+//     if (body.color !== undefined) vehicle.color = body.color;
+//     if (body.image !== undefined) vehicle.image = body.image;
+//     if (body.vehicleDocument !== undefined) vehicle.vehicleDocument = body.vehicleDocument;
+//     if (body.rentPerHour !== undefined) vehicle.rentPerHour = body.rentPerHour;
+//     if (body.location !== undefined) vehicle.location = body.location;
+//     if (body.countInStock !== undefined) vehicle.countInStock = body.countInStock;
+//     if (body.seats !== undefined) vehicle.seats = body.seats;
+//     if (body.licenseCategory !== undefined) vehicle.licenseCategory = body.licenseCategory;
+//     if (body.insuranceExpiredDate !== undefined)
+//       vehicle.insuranceExpiredDate = body.insuranceExpiredDate;
+//     if (body.bluebookExpiredDate !== undefined)
+//       vehicle.bluebookExpiredDate = body.bluebookExpiredDate;
+
+//     const updated = await vehicle.save();
+
+//     res.status(200).json({
+//       message: "Vehicle updated successfully!",
+//       vehicle: updated,
+//     });
+//   } catch (err) {
+//     res.status(400).json({
+//       error: err.message || "Could not update vehicle",
+//     });
+//   }
+// };
+
 // vehicle delete
 const deleteVehicle = async (req, res) => {
   try {

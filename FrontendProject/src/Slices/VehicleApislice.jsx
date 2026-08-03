@@ -48,7 +48,7 @@ const VehicleApislice = apiSlice.injectEndpoints({
 
 export const {
   useGetVehicleQuery,
-  useGetVehicleByIdQuery,
+  useGetVehicleByIdQuery, 
   useCreateVehicleMutation,
   useDeleteVehicleMutation,
   useUpdateVehicleMutation,

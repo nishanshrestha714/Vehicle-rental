@@ -250,14 +250,22 @@ function VehicleListPage() {
                       <td className="vx-rating"><FaStar/> {vehicle.rating ?? "—"}</td>
                       <td>
                         <div className="vx-actions">
-                          <button className="vx-icon-btn" title="Edit" 
-                            // as={Link}
-                            // to={`/admin/vehicle/${vehicle._id}/edit`}
+                          {/* <button className="vx-icon-btn" title="Edit" 
+                            as={Link}
+                            to={`/admin/vehicle/${vehicle._id}/edit`}
                             // onClick={()=> editHandler(vehicle._id)}
-                              onClick={() => editHandler(vehicle._id)} 
+                              // onClick={() => editHandler(vehicle._id)} 
                           >
                             <FaEdit size={13} />
-                          </button>
+                          </button> */}
+
+                          <Link
+  to={`/admin/vehicle/${vehicle._id}/edit`}
+  className="vx-icon-btn"
+  title="Edit"
+>
+  <FaEdit size={13} />
+</Link>
                           <button className="vx-icon-btn danger" title="Delete" 
                           onClick={()=> DeleteVehicleHaldler(vehicle._id)}>
                             <FaTrash size={13} />

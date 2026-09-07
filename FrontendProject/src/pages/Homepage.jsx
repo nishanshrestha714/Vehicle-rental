@@ -8,6 +8,8 @@ import ErrorMessage from "../components/ErrorMessage";
 import heroBg from "../assets/homepage.png";
 import "./HomePage.css";
 import { IoSearch } from "react-icons/io5";
+import { FaCar } from "react-icons/fa6";
+
 
 // import heroBg from "../assets/hero.png";
 // import Banner from "../components/Banner";
@@ -115,7 +117,7 @@ function HomePage() {
         }}
       >
         <div className="hp-hero-content">
-          <p className="hp-eyebrow">🚗 Vehicle Rental Platform</p>
+          <p className="hp-eyebrow"> <FaCar  /> Vehicle Rental Platform</p>
           <h1>
             Rent the <span>perfect vehicle</span>
             <br />

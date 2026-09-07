@@ -41,7 +41,7 @@ function Cartpage() {
     <div className="cp-page">
       <Container className="py-4">
 
-        {/* ── Header ── */}
+        {/*  Header  */}
         <div className="cp-header">
           <div>
             <h2 className="cp-title"><FaShoppingCart className="text-danger" />
@@ -55,7 +55,7 @@ function Cartpage() {
         </div>
 
         {CartItems.length === 0 ? (
-          /* ── Empty State ── */
+          /*  Empty State  */
           <div className="cp-empty">
             <div className="cp-empty-icon"><FaCarSide  className="text-danger"/>
             </div>
@@ -68,7 +68,7 @@ function Cartpage() {
         ) : (
           <Row className="g-4">
 
-            {/* ── Cart Items ── */}
+            {/* Cart Items  */}
             <Col lg={8}>
               <div className="cp-items-wrap">
                 {CartItems.map((item) => (
@@ -144,7 +144,7 @@ function Cartpage() {
               </div>
             </Col>
 
-            {/* ── Order Summary ── */}
+            {/*  Order Summary  */}
             <Col lg={4}>
               <div className="cp-summary-card">
                 <h4 className="cp-summary-title">Order Summary</h4>

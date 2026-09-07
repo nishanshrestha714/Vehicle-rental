@@ -1,3 +1,4 @@
+
 import apiSlice from "./Apislices";
 import { VEHICLE_URL } from "../constant";
 
@@ -43,13 +44,23 @@ const VehicleApislice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["vehicle"],
     }),
+
+  
+ uploadVehicleDocuments: builder.mutation({
+  query: (formData) => ({
+    url: "/api/uploads/vehicle-documents", 
+    method: "POST",
+    body: formData,
+  }),
+}),
   }),
 });
 
 export const {
   useGetVehicleQuery,
-  useGetVehicleByIdQuery, 
+  useGetVehicleByIdQuery,
   useCreateVehicleMutation,
   useDeleteVehicleMutation,
   useUpdateVehicleMutation,
+  useUploadVehicleDocumentsMutation,
 } = VehicleApislice;

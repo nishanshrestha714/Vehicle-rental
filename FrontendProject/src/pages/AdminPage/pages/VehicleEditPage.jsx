@@ -17,6 +17,7 @@ import {
   useCreateVehicleMutation,
   useGetVehicleByIdQuery,
   useUpdateVehicleMutation,
+  useUploadVehicleDocumentsMutation,
 } from "../../../Slices/VehicleApislice";
 
 function VehicleEditPage() {
@@ -31,14 +32,14 @@ function VehicleEditPage() {
     error,
   } = useGetVehicleByIdQuery(id, { skip: !id });
 
-  console.log("this is edit vehile " , vehicleData);
-
   const [createVehicle, { isLoading: createLoading }] =
     useCreateVehicleMutation();
   const [updateVehicle, { isLoading: updateLoading }] =
     useUpdateVehicleMutation();
+  const [uploadVehicleDocuments, { isLoading: uploadLoading }] =
+    useUploadVehicleDocumentsMutation();
 
-  // ===== All fields from your API =====
+  // ===== Fields =====
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
@@ -57,19 +58,32 @@ function VehicleEditPage() {
   const [discountPrice, setDiscountPrice] = useState("");
   const [location, setLocation] = useState("");
   const [countInStock, setCountInStock] = useState(0);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(""); // Cloudinary URL (or manual URL)
   const [discription, setDiscription] = useState("");
   const [bluebookExpiredDate, setBluebookExpiredDate] = useState("");
   const [insuranceExpiredDate, setInsuranceExpiredDate] = useState("");
-  const [bluebook, setBluebook] = useState("");
-  const [insurance, setInsurance] = useState("");
-  const [documents, setDocuments] = useState("");
+
+  // Files 
+  const [imageFile, setImageFile] = useState(null);
+  const [bluebookFile, setBluebookFile] = useState(null);
+  const [insuranceFile, setInsuranceFile] = useState(null);
+  const [documentsFile, setDocumentsFile] = useState(null);
+
+  // Existing Cloudinary URLs (edit mode)
+  const [existingBluebookUrl, setExistingBluebookUrl] = useState("");
+  const [existingInsuranceUrl, setExistingInsuranceUrl] = useState("");
+  const [existingDocumentsUrl, setExistingDocumentsUrl] = useState("");
 
   // ===== Fill form when data loads =====
   useEffect(() => {
     if (!isEditMode || !vehicleData) return;
 
-    const v = vehicleData.vehicle || vehicleData.data || vehicleData;
+    const v =
+      vehicleData.VechileById ||
+      vehicleData.vehicle ||
+      vehicleData.data ||
+      vehicleData;
+
     if (!v?._id) return;
 
     setName(v.name || "");
@@ -92,16 +106,39 @@ function VehicleEditPage() {
     setCountInStock(v.countInStock ?? 0);
     setImage(v.image || "");
     setDiscription(v.discription || v.description || "");
+
+    const isIsoDate = (str) => /^\d{4}-\d{2}-\d{2}/.test(str || "");
     setBluebookExpiredDate(
-      v.bluebookExpiredDate ? v.bluebookExpiredDate.slice(0, 10) : ""
+      isIsoDate(v.bluebookExpiredDate) ? v.bluebookExpiredDate.slice(0, 10) : ""
     );
     setInsuranceExpiredDate(
-      v.insuranceExpiredDate ? v.insuranceExpiredDate.slice(0, 10) : ""
+      isIsoDate(v.insuranceExpiredDate)
+        ? v.insuranceExpiredDate.slice(0, 10)
+        : ""
     );
-    setBluebook(v.vehicleDocument?.bluebook || "");
-    setInsurance(v.vehicleDocument?.insurance || "");
-    setDocuments(v.vehicleDocument?.documents || "");
+
+    setExistingBluebookUrl(v.vehicleDocument?.bluebook || "");
+    setExistingInsuranceUrl(v.vehicleDocument?.insurance || "");
+    setExistingDocumentsUrl(v.vehicleDocument?.documents || "");
   }, [isEditMode, vehicleData]);
+
+  const validatePdf = (file) => {
+    if (file && file.type !== "application/pdf") {
+      toast.error(`${file.name} is not a PDF file`);
+      return false;
+    }
+    return true;
+  };
+
+  const validateImage = (file) => {
+    if (!file) return true;
+    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      toast.error("Image must be JPG, PNG or WEBP");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,53 +158,84 @@ function VehicleEditPage() {
     }
 
     try {
+      let imageUrl = image; // keep existing / manually typed URL
+      let vehicleDocument = {
+        bluebook: existingBluebookUrl || undefined,
+        insurance: existingInsuranceUrl || undefined,
+        documents: existingDocumentsUrl || undefined,
+      };
+
+      // Upload any new files (image + documents) in one go
+      const hasNewFiles =
+        imageFile || bluebookFile || insuranceFile || documentsFile;
+
+      if (hasNewFiles) {
+        const formData = new FormData();
+        if (imageFile) formData.append("image", imageFile);
+        if (bluebookFile) formData.append("bluebook", bluebookFile);
+        if (insuranceFile) formData.append("insurance", insuranceFile);
+        if (documentsFile) formData.append("documents", documentsFile);
+
+        const uploadResult = await uploadVehicleDocuments(formData).unwrap();
+
+        // Support different response shapes from backend
+        const urls = uploadResult.urls || uploadResult || {};
+
+        if (urls.image) imageUrl = urls.image;
+        if (urls.bluebook) vehicleDocument.bluebook = urls.bluebook;
+        if (urls.insurance) vehicleDocument.insurance = urls.insurance;
+        if (urls.documents) vehicleDocument.documents = urls.documents;
+      }
+
       const payload = {
-        name,
-        brand,
-        model,
+        name: name.trim(),
+        brand: brand.trim(),
+        model: model.trim(),
         year: year ? Number(year) : undefined,
-        vehicleNumber,
+        vehicleNumber: vehicleNumber.trim(),
         vehicleType,
         fuelType,
         gearSystem,
-        color,
-        engineCC,
-        seats: Number(seats),
-        mileage,
+        color: color.trim(),
+        engineCC: engineCC.trim(),
+        seats: Number(seats) || 2,
+        mileage: mileage.trim(),
         licenseCategory,
-        rentPerHour: Number(rentPerHour),
-        price: Number(price),
-        discountPrice,
-        location,
-        countInStock: Number(countInStock),
-        image,
-        discription,
+        rentPerHour: Number(rentPerHour) || 0,
+        price: Number(price) || 0,
+        discountPrice: discountPrice || "",
+        location: location.trim(),
+        countInStock: Number(countInStock) || 0,
+        image: imageUrl || "",
+        discription: discription.trim(), // keep your backend field name
+        description: discription.trim(), // also send correct spelling (safe)
         bluebookExpiredDate: bluebookExpiredDate || undefined,
         insuranceExpiredDate: insuranceExpiredDate || undefined,
-        vehicleDocument: {
-          bluebook,
-          insurance,
-          documents,
-        },
+        vehicleDocument,
       };
 
       if (isEditMode) {
-        await updateVehicle({ _id: id, ...payload }).unwrap();
-        toast.success("Vehicle updated successfully");
+        // Match how your RTK Query update endpoint is defined
+        const res = await updateVehicle({ _id: id, ...payload }).unwrap();
+        toast.success(res?.message || "Vehicle updated successfully");
       } else {
-        await createVehicle(payload).unwrap();
-        toast.success("Vehicle added successfully");
+        const res = await createVehicle(payload).unwrap();
+        toast.success(res?.message || "Vehicle added successfully");
       }
 
       navigate("/admin/vehicles");
     } catch (err) {
+      console.error("Save error:", err);
       toast.error(
-        err?.data?.error || err?.data?.message || "Failed to save vehicle"
+        err?.data?.error ||
+          err?.data?.message ||
+          err?.error ||
+          "Failed to save vehicle"
       );
     }
   };
 
-  const isSaving = createLoading || updateLoading;
+  const isSaving = createLoading || updateLoading || uploadLoading;
 
   if (isEditMode && !id) {
     return (
@@ -179,12 +247,7 @@ function VehicleEditPage() {
 
   return (
     <>
-      <Button
-        variant="dark"
-        as={Link}
-        to="/admin/vehicles"
-        className="mb-3"
-      >
+      <Button variant="dark" as={Link} to="/admin/vehicles" className="mb-3">
         Go Back
       </Button>
 
@@ -296,7 +359,7 @@ function VehicleEditPage() {
                         <option value="car">Car</option>
                         <option value="bike">Bike</option>
                         <option value="scooter">Scooter</option>
-                        <option value="van">Van</option>
+                        <option value="Bus">Bus</option>
                       </Form.Select>
                     </Form.Group>
                   </Col>
@@ -324,7 +387,7 @@ function VehicleEditPage() {
                         onChange={(e) => setGearSystem(e.target.value)}
                       >
                         <option value="manual">Manual</option>
-                        <option value="automatic">Automatic</option>
+                        <option value="auto-manual">Auto-Manual</option>
                       </Form.Select>
                     </Form.Group>
                   </Col>
@@ -379,6 +442,7 @@ function VehicleEditPage() {
                         <option value="B">B</option>
                         <option value="C">C</option>
                         <option value="D">D</option>
+                        <option value="K">K</option>
                       </Form.Select>
                     </Form.Group>
                   </Col>
@@ -396,7 +460,8 @@ function VehicleEditPage() {
                   <Col md={3}>
                     <Form.Group className="mb-3">
                       <Form.Label>
-                        Rent / Hour (Rs.) <span className="text-danger">*</span>
+                        Rent / Hour (Rs.){" "}
+                        <span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -467,9 +532,7 @@ function VehicleEditPage() {
                       <Form.Control
                         type="date"
                         value={bluebookExpiredDate}
-                        onChange={(e) =>
-                          setBluebookExpiredDate(e.target.value)
-                        }
+                        onChange={(e) => setBluebookExpiredDate(e.target.value)}
                       />
                     </Form.Group>
                   </Col>
@@ -487,32 +550,89 @@ function VehicleEditPage() {
                   </Col>
                   <Col md={4}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Bluebook File</Form.Label>
+                      <Form.Label>Bluebook (PDF)</Form.Label>
                       <Form.Control
-                        value={bluebook}
-                        onChange={(e) => setBluebook(e.target.value)}
-                        placeholder="filename.pdf"
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files[0] || null;
+                          if (validatePdf(file)) setBluebookFile(file);
+                          else e.target.value = "";
+                        }}
                       />
+                      {bluebookFile ? (
+                        <Form.Text className="text-success d-block">
+                          Selected: {bluebookFile.name}
+                        </Form.Text>
+                      ) : existingBluebookUrl ? (
+                        <Form.Text className="d-block">
+                          <a
+                            href={existingBluebookUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            View current file
+                          </a>
+                        </Form.Text>
+                      ) : null}
                     </Form.Group>
                   </Col>
                   <Col md={4}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Insurance File</Form.Label>
+                      <Form.Label>Insurance (PDF)</Form.Label>
                       <Form.Control
-                        value={insurance}
-                        onChange={(e) => setInsurance(e.target.value)}
-                        placeholder="filename.pdf"
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files[0] || null;
+                          if (validatePdf(file)) setInsuranceFile(file);
+                          else e.target.value = "";
+                        }}
                       />
+                      {insuranceFile ? (
+                        <Form.Text className="text-success d-block">
+                          Selected: {insuranceFile.name}
+                        </Form.Text>
+                      ) : existingInsuranceUrl ? (
+                        <Form.Text className="d-block">
+                          <a
+                            href={existingInsuranceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            View current file
+                          </a>
+                        </Form.Text>
+                      ) : null}
                     </Form.Group>
                   </Col>
                   <Col md={4}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Other Documents</Form.Label>
+                      <Form.Label>Other Documents (PDF)</Form.Label>
                       <Form.Control
-                        value={documents}
-                        onChange={(e) => setDocuments(e.target.value)}
-                        placeholder="filename.pdf"
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files[0] || null;
+                          if (validatePdf(file)) setDocumentsFile(file);
+                          else e.target.value = "";
+                        }}
                       />
+                      {documentsFile ? (
+                        <Form.Text className="text-success d-block">
+                          Selected: {documentsFile.name}
+                        </Form.Text>
+                      ) : existingDocumentsUrl ? (
+                        <Form.Text className="d-block">
+                          <a
+                            href={existingDocumentsUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            View current file
+                          </a>
+                        </Form.Text>
+                      ) : null}
                     </Form.Group>
                   </Col>
                 </Row>
@@ -525,14 +645,37 @@ function VehicleEditPage() {
                 Image & Description
               </Card.Header>
               <Card.Body>
-                <Form.Group className="mb-3">
-                  <Form.Label>Image URL</Form.Label>
+                <Form.Group controlId="image" className="mb-3">
+                  <Form.Label>Image</Form.Label>
                   <Form.Control
+                    type="text"
+                    placeholder="Enter image URL (or upload below)"
                     value={image}
                     onChange={(e) => setImage(e.target.value)}
-                    placeholder="/vehicles/images/..."
                   />
-                  {image && (
+                  <Form.Control
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    className="mt-2"
+                    onChange={(e) => {
+                      const file = e.target.files[0] || null;
+                      if (validateImage(file)) {
+                        setImageFile(file);
+                        // Optional: show local preview name
+                        if (file) {
+                          // keep the text field as-is; URL will be set after upload
+                        }
+                      } else {
+                        e.target.value = "";
+                      }
+                    }}
+                  />
+                  {imageFile && (
+                    <Form.Text className="text-success d-block">
+                      Selected: {imageFile.name} (will upload to Cloudinary)
+                    </Form.Text>
+                  )}
+                  {image && !imageFile && (
                     <img
                       src={image}
                       alt="Preview"
@@ -541,6 +684,7 @@ function VehicleEditPage() {
                     />
                   )}
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Description</Form.Label>
                   <Form.Control
@@ -556,7 +700,9 @@ function VehicleEditPage() {
             <div className="d-flex gap-2">
               <Button type="submit" variant="primary" disabled={isSaving}>
                 {isSaving
-                  ? "Saving..."
+                  ? uploadLoading
+                    ? "Uploading files..."
+                    : "Saving..."
                   : isEditMode
                   ? "Update Vehicle"
                   : "Add Vehicle"}

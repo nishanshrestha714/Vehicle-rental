@@ -47,9 +47,11 @@ const addVechiles = async (req, res) => {
     } = body;
 
     const userId = req.user._id;
-    //     // if (!license.category.includes(vehicle.requiredLicenseCategory)) {
-//     //    return res.status(403).json({ error: "License category mismatch" });
+
+      // if (!license.category.includes(vehicle.requiredLicenseCategory)) {
+     //    return res.status(403).json({ error: "License category mismatch" });
     // }
+
     if (!userId)
       return res
         .status(401)
@@ -78,6 +80,9 @@ const addVechiles = async (req, res) => {
       color: color ? color : "sample color",
       image: image ? image : "sample image.jpg",
 
+      // These arrive as Cloudinary URLs from the /api/upload/vehicle-documents
+      // endpoint (called by the frontend before this request), falling back
+      // to placeholder text only when nothing was uploaded.
       vehicleDocument: {
         documents: vehicleDocument?.documents
           ? vehicleDocument.documents
@@ -132,8 +137,8 @@ const addVechiles = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-// getvehicle by id
 
+// get vehicle by id
 const getVehicleById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -142,22 +147,21 @@ const getVehicleById = async (req, res) => {
       "user",
       "firstName lastName email -_id",
     );
-    if (VechileById) {
-      return res
-        .status(200)
-        .json({ message: "your add by vehicles", VechileById });
+    if (!VechileById) {
+      return res.status(404).json({ error: "vehicle not found" });
     }
+
+    return res
+      .status(200)
+      .json({ message: "your add by vehicles", VechileById });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "internal server error", error: err.message });
+    res.status(500).json({ error: "internal server error: " + err.message });
   }
 };
 
 //so add in review system in add project
 const addreview = async (req, res) => {
   try {
-    // Same defensive fix applied here — addreview also destructures req.body.
     const body = req.body || {};
     const { title, comment, rating } = body;
     if (!title || !comment) {
@@ -175,7 +179,6 @@ const addreview = async (req, res) => {
       return res.status(401).send({ error: "user not login" });
     }
     const { vehicleId: reViewVehicleId } = req.params;
-    // vehicle id check
 
     if (!reViewVehicleId) {
       return res.status(400).json({ error: "Vehicle ID is required in URL" });
@@ -198,7 +201,7 @@ const addreview = async (req, res) => {
       rating,
       user,
     });
-    // await vehicle.save();
+
     vehicle.numReview += 1;
     // and so total rating calculate
 
@@ -210,24 +213,22 @@ const addreview = async (req, res) => {
     vehicle.rating = (totalrating / vehicle.numReview).toFixed(2);
     await vehicle.save();
 
-    // response
     res.status(201).json({ message: "Review added successfully" });
   } catch (err) {
     res
       .status(500)
-      .json({ error: "internal server error", error: err.message });
+      .json({ error: "internal server error: " + err.message });
   }
 };
 
 // update vehicle
 const UpdateVehicle = async (req, res) => {
   try {
-    // Same defensive fix applied here — UpdateVehicle also destructures req.body.
     const body = req.body || {};
     const {
       name,
       vehicleNumber,
-      description,
+      discription,
       vehicleType,
       brand,
       gearSystem,
@@ -239,6 +240,7 @@ const UpdateVehicle = async (req, res) => {
       price,
       color,
       image,
+      countInStock,
       vehicleDocument,
       rentPerHour,
       location,
@@ -256,10 +258,9 @@ const UpdateVehicle = async (req, res) => {
     }
 
     // update key
-
     Vechile.name = name || Vechile.name;
     Vechile.vehicleNumber = vehicleNumber || Vechile.vehicleNumber;
-    Vechile.description = description || Vechile.description;
+    Vechile.discription = discription || Vechile.discription;
     Vechile.vehicleType = vehicleType || Vechile.vehicleType;
     Vechile.brand = brand || Vechile.brand;
     Vechile.gearSystem = gearSystem || Vechile.gearSystem;
@@ -271,15 +272,24 @@ const UpdateVehicle = async (req, res) => {
     Vechile.price = price || Vechile.price;
     Vechile.color = color || Vechile.color;
     Vechile.image = image || Vechile.image;
-    Vechile.vehicleDocument = vehicleDocument || Vechile.vehicleDocument;
+    Vechile.countInStock = countInStock || Vechile.countInStock;
+
+
+    Vechile.vehicleDocument = {
+      ...Vechile.vehicleDocument,
+      ...(vehicleDocument || {}),
+    };
+
     Vechile.rentPerHour = rentPerHour || Vechile.rentPerHour;
     Vechile.location = location || Vechile.location;
-    ((Vechile.insuranceExpiredDate =
-      insuranceExpiredDate || Vechile.insuranceExpiredDate),
-      (Vechile.bluebookExpiredDate =
-        bluebookExpiredDate || Vechile.bluebookExpiredDate));
+    Vechile.insuranceExpiredDate =
+      insuranceExpiredDate || Vechile.insuranceExpiredDate;
+    Vechile.bluebookExpiredDate =
+      bluebookExpiredDate || Vechile.bluebookExpiredDate;
 
-    Vechile.save();
+    // FIX: this was previously `Vechile.save();` without await — the
+    // response could be sent before the save actually completed/failed.
+    await Vechile.save();
 
     res
       .status(200)
@@ -287,65 +297,9 @@ const UpdateVehicle = async (req, res) => {
   } catch (err) {
     res
       .status(400)
-      .json({ error: "not update for vehicle", error: err.message });
+      .json({ error: "not update for vehicle: " + err.message });
   }
 };
-
-
-// const UpdateVehicle = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const body = req.body || {};
-
-//     const vehicle = await Vehicles.findById(id).populate(
-//       "user",
-//       "firstName lastName email -_id"
-//     );
-
-//     if (!vehicle) {
-//       return res.status(404).json({ error: "Vehicle not found!" });
-//     }
-
-//     // Update only fields that were sent
-//     if (body.name !== undefined) vehicle.name = body.name;
-//     if (body.vehicleNumber !== undefined) vehicle.vehicleNumber = body.vehicleNumber;
-//     if (body.discription !== undefined) vehicle.discription = body.discription;
-//     if (body.description !== undefined) vehicle.discription = body.description; // alias
-//     if (body.vehicleType !== undefined) vehicle.vehicleType = body.vehicleType;
-//     if (body.brand !== undefined) vehicle.brand = body.brand;
-//     if (body.gearSystem !== undefined) vehicle.gearSystem = body.gearSystem;
-//     if (body.model !== undefined) vehicle.model = body.model;
-//     if (body.year !== undefined) vehicle.year = body.year;
-//     if (body.mileage !== undefined) vehicle.mileage = body.mileage;
-//     if (body.fuelType !== undefined) vehicle.fuelType = body.fuelType;
-//     if (body.engineCC !== undefined) vehicle.engineCC = body.engineCC;
-//     if (body.price !== undefined) vehicle.price = body.price;
-//     if (body.discountPrice !== undefined) vehicle.discountPrice = body.discountPrice;
-//     if (body.color !== undefined) vehicle.color = body.color;
-//     if (body.image !== undefined) vehicle.image = body.image;
-//     if (body.vehicleDocument !== undefined) vehicle.vehicleDocument = body.vehicleDocument;
-//     if (body.rentPerHour !== undefined) vehicle.rentPerHour = body.rentPerHour;
-//     if (body.location !== undefined) vehicle.location = body.location;
-//     if (body.countInStock !== undefined) vehicle.countInStock = body.countInStock;
-//     if (body.seats !== undefined) vehicle.seats = body.seats;
-//     if (body.licenseCategory !== undefined) vehicle.licenseCategory = body.licenseCategory;
-//     if (body.insuranceExpiredDate !== undefined)
-//       vehicle.insuranceExpiredDate = body.insuranceExpiredDate;
-//     if (body.bluebookExpiredDate !== undefined)
-//       vehicle.bluebookExpiredDate = body.bluebookExpiredDate;
-
-//     const updated = await vehicle.save();
-
-//     res.status(200).json({
-//       message: "Vehicle updated successfully!",
-//       vehicle: updated,
-//     });
-//   } catch (err) {
-//     res.status(400).json({
-//       error: err.message || "Could not update vehicle",
-//     });
-//   }
-// };
 
 // vehicle delete
 const deleteVehicle = async (req, res) => {
@@ -360,9 +314,9 @@ const deleteVehicle = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .send({ error: "failed to delete vehicle!", error: err.message });
+      .send({ error: "failed to delete vehicle!: " + err.message });
   }
-}; 
+};
 
 export {
   getVehicles,

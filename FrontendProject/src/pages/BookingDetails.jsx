@@ -1,3 +1,4 @@
+
 import { useParams, Link } from "react-router";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -74,9 +75,9 @@ function BookingDetails() {
   const { data: bookingRes, isLoading, error , refetch} = useGetBookingByIdQuery(id);
   const { data: PaymentDetails } = useEsewaPaymentDetailsQuery(id);
   const [CompletedBooking , {isLoading:bookingLoading}]= useCompletedBookingMutation();
-  console.log("this  is payment  details ", PaymentDetails);
-  console.log(PaymentDetails?.details);
-  console.log("Booking ID:", id);
+  // console.log("this  is payment  details ", PaymentDetails);
+  // console.log(PaymentDetails?.details);
+  // console.log("Booking ID:", id);
 
   const navigate = useNavigate();
   // e sewa page handle page design and  output display
@@ -111,26 +112,27 @@ function BookingDetails() {
   //   navigate(`/rental/${b?._id}`);
   // };
 
-  const handleRental = () => {
-    if (!b) {
-      toast.error("Booking not loaded yet");
-      return;
-    }
+//  Go to Rental 
+const handleRental = () => {
+  if (!b) {
+    toast.error("Booking not loaded yet");
+    return;
+  }
 
-    if (b?.payment?.isPaid !== true) {
-      toast.error("Please complete payment first");
-      return;
-    }
+  if (b?.payment?.isPaid !== true) {
+    toast.error("Please complete payment first");
+    return;
+  }
 
-    // if (!b?.bookingStatus ) {
-    //   toast.error("Booking is not confirmed yet");
-    //   return;
-    // }
+  // Optional: uncomment if you also want to force bookingStatus
+  // if (!b?.bookingStatus) {
+  //   toast.error("Booking is not confirmed yet");
+  //   return;
+  // }
 
-    toast.success("Redirecting to rental...");
-    navigate("/rental");
-    // navigate(`/rental/${b._id}`);
-  };
+  toast.success("Redirecting to rental...");
+  navigate(`/rental/${b._id}`);
+};
 
   // Safe read from Redux — optional chaining prevents crash if empty
   const { Nagariktapage, License } = useSelector((state) => state.cart);
@@ -141,11 +143,11 @@ function BookingDetails() {
   const userName =
     `${b?.user?.firstName || ""} ${b?.user?.lastName || ""}`.trim() || "—";
 
-  console.log("Full booking data:", bookingRes);
-  console.log("Normalized b:", b);
-  console.log("Payment object:", b?.payment);
-  console.log("isPaid:", b?.payment?.isPaid);
-  console.log("payment method:", b?.payment?.method);
+  // console.log("Full booking data:", bookingRes);
+  // console.log("Normalized b:", b);
+  // console.log("Payment object:", b?.payment);
+  // console.log("isPaid:", b?.payment?.isPaid);
+  // console.log("payment method:", b?.payment?.method);
 
   //  Loading state
   if (isLoading) {
@@ -178,9 +180,9 @@ function BookingDetails() {
   }
 
   const totalAmount = b?.totalPrice || 0;
-  console.log("this is b ", b);
-  console.log("this is is paid", b?.payment?.isPaid);
-  console.log("this is booking status", b?.bookingStatus);
+  // console.log("this is b ", b);
+  // console.log("this is is paid", b?.payment?.isPaid);
+  // console.log("this is booking status", b?.bookingStatus);
 
 
   // const CompletedBookingHandler = async ()=>{
@@ -446,17 +448,17 @@ const CompletedBookingHandler = async () => {
 
 )}
 
-              <Button
-                type="button"
-                as={Link} 
-                // to="rental"
-                variant="primary"
-                className="w-100 fw-bold py-2"
-                disabled={!b?.payment?.isPaid || !b?.bookingStatus}
-                onClick={handleRental}
-              >
-                Go To Rental
-              </Button>
+             <ListGroup.Item className="d-grid">
+  <Button
+    type="button"
+    variant="primary"
+    className="w-100 fw-bold py-2"
+    disabled={!b?.payment?.isPaid}          // ← only check payment
+    onClick={handleRental}
+  >
+    Go To Rental
+  </Button>
+</ListGroup.Item>
             </ListGroup>
           </Card>
         </Col>
@@ -466,3 +468,4 @@ const CompletedBookingHandler = async () => {
 }
 
 export default BookingDetails;
+

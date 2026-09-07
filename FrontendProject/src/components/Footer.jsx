@@ -4,12 +4,12 @@ import { NavLink } from "react-router";
 function Footer() {
   function goToFacebook() {
     window.location.href =
-      "https://www.facebook.com/profile.php?id=61553846560963";
+      "https://www.facebook.com/";
   }
 
   function goToYoutube() {
     window.location.href =
-      "https://youtube.com/@dearsubscriber3094?si=WEXYClnKnuY5KJB2";
+"https://www.youtube.com/";
   }
 
   const today = new Date();

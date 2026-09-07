@@ -1,3 +1,4 @@
+
 import express from 'express';
 import router from './routes/user.routs.js';
 import logger from './middleware/logger.middleware.js';
@@ -40,8 +41,9 @@ app.use("/api/uploads",uploads);
 
 const PORT =process.env.PORT || 8001 ;
 
-app.get((req,res)=>{
-    console.log(res.send('API is working'))
+
+app.get("/", (req,res)=>{
+    res.send('API is working')
 });
 app.use(notfound);
 app.use(errorhandler);

@@ -4,15 +4,15 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 import Rating from "../components/Rating";
 import { useGetVehicleByIdQuery } from "../Slices/VehicleApislice";
-import {useSelector} from "react-redux"
+import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux";
 import { AddToCart } from "../Slices/cartslice";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import { PiStarThin } from "react-icons/pi";
- import {useNavigate} from "react-router"
-
-
+import { FaLocationDot, FaFlagCheckered, FaCalendarDay, FaCalendarCheck } from "react-icons/fa6";
+import { useNavigate } from "react-router"
+import { FaCalendarDays } from "react-icons/fa6";
 
 import "./vehiclepage.css";
 
@@ -27,14 +27,12 @@ function Vehiclepage() {
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [added, setAdded] = useState(false);
-  const {CartItems} = useSelector ((state)=> state.cart);
-
+  const { CartItems } = useSelector((state) => state.cart);
 
   const totalDays =
     pickupDate && returnDate
       ? Math.max(
         0,
-        // calculate the date 
         Math.ceil(
           (new Date(returnDate) - new Date(pickupDate)) / 86400000
         )
@@ -45,24 +43,20 @@ function Vehiclepage() {
 
   const navigate = useNavigate();
 
-
   const AddToCartHandler = () => {
     if (!pickupLocation || !dropLocation || !pickupDate || !returnDate) {
       alert(" Please fill all booking fields");
       return;
     }
-    // if (!AddToCartHandler) {
-    //   return alert("this vehicle is already added in cart!")
-    // }
     if (totalDays <= 0) {
       alert("Return date must be after pickup date");
       return;
     }
-    const exitCartItem = CartItems.find((item)=> item.id === vehicle._id);
-    if(exitCartItem){
-      return alert ("This vehicle is already added to cart!");
+    const exitCartItem = CartItems.find((item) => item.id === vehicle._id);
+    if (exitCartItem) {
+      return alert("This vehicle is already added to cart!");
     }
-    
+
     dispatch(
       AddToCart({
         _id: vehicle._id,
@@ -77,15 +71,13 @@ function Vehiclepage() {
         totalPrice,
       })
     );
-     //  navigate is INSIDE the function
     setAdded(true);
     setTimeout(() => setAdded(false), 200);
-      navigate("/cart"); //  navigate is INSIDE the function
+    navigate("/cart");
   };
 
-
   console.log(vehicle._id);
-console.log(CartItems);
+  console.log(CartItems);
 
   return (
     <div className="vp-page">
@@ -108,7 +100,7 @@ console.log(CartItems);
             <Col md={6}>
               <div className="vp-card vp-image-card">
                 <div className="vp-img-wrap">
-                  <span className="vp-img-badge"><PiStarThin  className="text-danger"/>
+                  <span className="vp-img-badge"><PiStarThin className="text-danger" />
                     Premium</span>
                   <img
                     src={vehicle.image}
@@ -119,8 +111,6 @@ console.log(CartItems);
                 <div className="vp-img-footer">
                   <span className="vp-img-meta">&#128247; {vehicle.images?.length || 1} Photos</span>
                   <span className="vp-img-meta">{vehicle.name} </span>
-                  {/* <span className="vp-img-meta">&#128228; 360° View</span>
-                  <span className="vp-img-meta vp-heart">&#9825; Save</span> */}
                 </div>
               </div>
             </Col>
@@ -173,22 +163,6 @@ console.log(CartItems);
 
                 <hr className="vp-hr" />
 
-                {/* <div className="vp-features">
-                  {[
-                    { icon: "&#128268;", label: "Autopilot" },
-                    { icon: "&#128246;", label: "Wi-Fi Hotspot" },
-                    { icon: "&#10052;", label: "Climate Control" },
-                    { icon: "&#128241;", label: "App Connected" },
-                    { icon: "&#9889;", label: "Fast Charging" },
-                    { icon: "&#128737;", label: "Full Insurance" },
-                  ].map((f, i) => (
-                    <div className="vp-feat" key={i}>
-                      <span className="vp-feat-icon">{f.icon}</span>
-                      {f.label}
-                    </div>
-                  ))}
-                </div> */}
-
               </div>
             </Col>
 
@@ -196,17 +170,17 @@ console.log(CartItems);
             <Col md={12}>
               <div className="vp-card vp-booking-card">
 
-                <div className="vp-booking-title">
-                  <span className="vp-title-icon">&#128197;</span>
-                  Book This Vehicle
-                </div>
+             <div className="vp-booking-title">
+  <FaCalendarDays className="vp-title-icon" />
+  Book This Vehicle
+</div>
 
                 <Form>
                   <Row className="g-3 mb-4">
                     <Col md={6}>
                       <Form.Group>
                         <Form.Label className="vp-form-label">
-                          <span className="vp-lbl-icon">&#128205;</span>
+                          <FaLocationDot className="vp-lbl-icon" />
                           Pickup Location
                         </Form.Label>
                         <Form.Control
@@ -222,7 +196,7 @@ console.log(CartItems);
                     <Col md={6}>
                       <Form.Group>
                         <Form.Label className="vp-form-label">
-                          <span className="vp-lbl-icon">&#128204;</span>
+                          <FaFlagCheckered className="vp-lbl-icon" />
                           Drop Location
                         </Form.Label>
                         <Form.Control
@@ -238,7 +212,7 @@ console.log(CartItems);
                     <Col md={6}>
                       <Form.Group>
                         <Form.Label className="vp-form-label">
-                          <span className="vp-lbl-icon">&#128197;</span>
+                          <FaCalendarDay className="vp-lbl-icon" />
                           Pickup Date
                         </Form.Label>
                         <Form.Control
@@ -253,7 +227,7 @@ console.log(CartItems);
                     <Col md={6}>
                       <Form.Group>
                         <Form.Label className="vp-form-label">
-                          <span className="vp-lbl-icon">&#128198;</span>
+                          <FaCalendarCheck className="vp-lbl-icon" />
                           Return Date
                         </Form.Label>
                         <Form.Control

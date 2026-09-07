@@ -1,51 +1,65 @@
-
-
-import express from 'express';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';                          
-import { v2 as cloudinary } from 'cloudinary';
+import express from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
+import checkAuth from "../middleware/checkAuth.middleware.js";
+import checkAdmin from "../middleware/checkAdmin.middleware.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
-  api_key:    process.env.API_KEY,
+  api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    //  auto-create folder
-    fs.mkdirSync('uploads/', { recursive: true }); 
-    cb(null, 'uploads/');
-    // removed console.log(req.file) — undefined here
+    fs.mkdirSync("uploads/", { recursive: true });
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    const filename = Date.now() + path.extname(file.originalname);
+    const filename =
+      Date.now() + "-" + file.fieldname + path.extname(file.originalname);
     cb(null, filename);
   },
 });
 
-const imageFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
+//  Existing standalone image upload (unchanged, still works)
+const imageOnlyFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files allowed'), false);
+    cb(new Error("Only image files allowed"), false);
   }
 };
 
-const upload = multer({
+const imageUpload = multer({
   storage,
-  fileFilter: imageFilter,
+  fileFilter: imageOnlyFilter,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
+
+//  Combined vehicle upload: image + PDFs in one request
+const combinedFilter = (req, file, cb) => {
+  if (file.fieldname === "image") {
+    if (file.mimetype.startsWith("image/")) return cb(null, true);
+    return cb(new Error("image must be an image file (jpg, png, webp)"), false);
+  }
+  if (file.mimetype === "application/pdf") return cb(null, true);
+  return cb(new Error(`${file.fieldname} must be a PDF file`), false);
+};
+
+const combinedUpload = multer({
+  storage,
+  fileFilter: combinedFilter,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
 });
 
 const router = express.Router();
 
-router.post('/', upload.single('image'), async (req, res) => {
+// POST /api/uploads  (single image only — kept for any other callers)
+router.post("/", imageUpload.single("image"), async (req, res) => {
   try {
-    // console.log("FILE:", req.file);
-
-    //  Guard — return error if no file sent
     if (!req.file) {
       return res.status(400).send({ error: "No image file provided" });
     }
@@ -55,100 +69,85 @@ router.post('/', upload.single('image'), async (req, res) => {
       transformation: [{ width: 200, height: 240 }],
     });
 
-    //  Delete local file after upload to save disk space
     fs.unlinkSync(req.file.path);
 
     res.status(200).send({
       message: "Image uploaded successfully",
       image: result.secure_url,
     });
-
   } catch (err) {
     console.log("CLOUDINARY ERROR:", err);
     res.status(500).send({ error: err.message });
   }
 });
 
+router.post(
+  "/vehicle-documents",
+  checkAuth,
+  checkAdmin,
+  combinedUpload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "bluebook", maxCount: 1 },
+    { name: "insurance", maxCount: 1 },
+    { name: "documents", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const uploadedLocalPaths = [];
+
+    try {
+      const files = req.files || {};
+
+      if (
+        !files.image &&
+        !files.bluebook &&
+        !files.insurance &&
+        !files.documents
+      ) {
+        return res.status(400).send({ error: "No file provided" });
+      }
+
+      const urls = {};
+
+      const imageFile = files.image?.[0];
+      if (imageFile) {
+        uploadedLocalPaths.push(imageFile.path);
+        const result = await cloudinary.uploader.upload(imageFile.path, {
+          folder: "vehicles",
+          transformation: [{ width: 200, height: 240 }],
+        });
+        urls.image = result.secure_url;
+      }
+
+      for (const field of ["bluebook", "insurance", "documents"]) {
+        const file = files[field]?.[0];
+        if (!file) continue;
+
+        uploadedLocalPaths.push(file.path);
+
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: `vehicles/documents/${field}`,
+          resource_type: "raw",
+          access_mode: "public",
+          type: "upload",
+        });
+
+        urls[field] = result.secure_url;
+      }
+
+      uploadedLocalPaths.forEach((p) => fs.unlinkSync(p));
+
+      res.status(200).send({
+        message: "File(s) uploaded successfully",
+        urls,
+      });
+    } catch (err) {
+      uploadedLocalPaths.forEach((p) => {
+        if (fs.existsSync(p)) fs.unlinkSync(p);
+      });
+      console.log("CLOUDINARY UPLOAD ERROR:", err);
+      res.status(500).send({ error: err.message });
+    }
+  },
+);
+
 export default router;
-
-// in simple note form warning and error slove this note 
-//No file sent → crash on req.file.path and this slove  Add if (!req.file) guard
-//Local file never deletedfs.unlinkSync(req.file.path) after upload
-//req.file logged in wrong placeMove log to route handler
-
-//uploads/ folder missing crashes multerfs.mkdirSync('uploads/', { recursive: true })
-
-
-
-//  this is code for comment and error code 
-
-// import express from 'express';
-// import multer from 'multer';
-// import path from 'path';
-// import {v2 as cloudinary} from 'cloudinary';
-
-
-// cloudinary.config({
-//     cloud_name:process.env.CLOUD_NAME,
-//     api_key:process.env.API_KEY,
-//     api_secret:process.env.API_SECRET
-// });
-// // console.log("REQ.FILE =", req.file);
-// console.log( "this is claude name ",process.env.CLOUD_NAME);
-// console.log( "this is api key",process.env.API_KEY);
-// // console.log("this is api secret key",process.env.API_SECRET)
-// console.log("Server Time:", new Date());
-// console.log(new Date());
-// console.log(process.version);
-
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, 'uploads/');
-//     console.log("REQ.FILE =", req.file);
-//   },
-  
-//   filename: (req, file, cb) => {  
-//     const filename = Date.now() + path.extname(file.originalname);
-//     cb(null, filename);
-//   }
-// });
-
-// const imageFilter = (req, file, cb) => {
-//   if (file.mimetype.startsWith('image/')) {
-//     cb(null, true);
-//   } else {
-//     cb(new Error('Only image files allowed'), false);
-//   }
-// };
-
-// const upload = multer({
-//   storage,
-//   fileFilter: imageFilter,
-//   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
-// });
-
-
-// const router = express.Router();
-// router.post('/', upload.single('image'), async (req, res) => {
-//  try{
-//       console.log("FILE:", req.file);
-
-//   const result = await  cloudinary.uploader.upload(req.file.path, {
-//     folder:"vehicles",
-//     transformation:[{width:200, height:240}]
-//   })
-//   res.status(200).send({message:"image upload sucess",  image:result.secure_url})
-
-//   }
-// //  console.log("Uploading file:", req.file?.path);
-// // console.log("Current Time:", new Date().toISOString());
-//  catch(err){
-//       console.log("CLOUDINARY ERROR:", err);
-//   console.dir(err, { depth: null });
-//   res.status(500).send({error:err.message});
-  
-//  }
-// });
-
-// export default router;

@@ -225,22 +225,7 @@ const getNagariktaById = async (req, res) => {
 };
 
 // get my nagarikta add in controllers
-// const getMyNagariktaStatus = async (req, res) => {
-//   try {
-//     const myNagarikta = await Nagarikta.findOne({ user: req.user._id });
 
-//     if (!myNagarikta)
-//       return res.status(404).json({ error: "Not submitted yet" });
-
-//     res.status(200).json({
-//       isVerified: myNagarikta.verified,
-//       verifiedAt: myNagarikta.verifiedAt,
-//       status: myNagarikta.verified ? "verified" : "pending",
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
 
 const getMyNagariktaStatus = async (req, res) => {
   try {

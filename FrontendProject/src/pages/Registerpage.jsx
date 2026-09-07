@@ -42,7 +42,7 @@ function getPasswordScore(pw) {
 }
 
 const STRENGTH_LABELS = ["Weak", "Fair", "Good", "Strong"];
-const STRENGTH_BAR_COLORS = { 1: "#d64545", 2: "#e8a23c", 3: "#d7b23c", 4: "#4caf6e" };
+const STRENGTH_BAR_COLORS = { 1: "#d64545", 2: "#4242dc", 3: "#d7b23c", 4: "#4caf6e" };
 
 function RegisterPage() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -134,7 +134,7 @@ function RegisterPage() {
     const focused = focusedField === field;
     return {
       background: "rgb(255, 255, 255)",
-      border: `1.5px solid ${invalid ? "#5145d6" : focused ? "#564aff" : "#e6ddcd"}`,
+      border: `1.5px solid ${invalid ? "#5145d6" : focused ? "#564aff" : "#afaeba"}`,
       borderRadius: "0.65rem",
       padding: "0.65rem 0.9rem",
       fontSize: "0.95rem",
@@ -157,7 +157,7 @@ function RegisterPage() {
                 margin: "3rem auto",
                 padding: "2.5rem 2rem",
                 background: "#ffffff",
-                border: `1.5px solid ${"#f1e4cc"}`,
+                border: `1.5px solid ${"#e8e9f0"}`,
                 borderRadius: "1rem",
                 boxShadow: "0 20px 40px -24px rgba(33, 28, 22, 0.18)",
               }}

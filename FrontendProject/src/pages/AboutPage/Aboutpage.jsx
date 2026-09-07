@@ -1,17 +1,7 @@
-// function Aboutpage(){
-//     return (
-//         <>
-//          <p> this is about  page </p>
-//         </>
-//     )
-// };
-// export default Aboutpage;
-
-
-
 import React from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { FaLocationDot, FaCreditCard, FaShieldHalved } from "react-icons/fa6";
 import "../AboutPage/Aboutpage.css";
 
 function Aboutpage() {
@@ -81,7 +71,7 @@ function Aboutpage() {
           <Card className="border-0 shadow-sm h-100 text-center p-4 custom-about-card">
             <Card.Body>
               <div className="icon-wrapper bg-light text-dark rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style={{ width: '60px', height: '60px' }}>
-                <span className="fs-3">📍</span>
+                <FaLocationDot size={24} />
               </div>
               <Card.Title className="fw-bold mb-3">Flexible Locations</Card.Title>
               <Card.Text className="text-secondary">
@@ -95,7 +85,7 @@ function Aboutpage() {
           <Card className="border-0 shadow-sm h-100 text-center p-4 custom-about-card">
             <Card.Body>
               <div className="icon-wrapper bg-light text-dark rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style={{ width: '60px', height: '60px' }}>
-                <span className="fs-3">💳</span>
+                <FaCreditCard size={24} />
               </div>
               <Card.Title className="fw-bold mb-3">Transparent Pricing</Card.Title>
               <Card.Text className="text-secondary">
@@ -109,7 +99,7 @@ function Aboutpage() {
           <Card className="border-0 shadow-sm h-100 text-center p-4 custom-about-card">
             <Card.Body>
               <div className="icon-wrapper bg-light text-dark rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style={{ width: '60px', height: '60px' }}>
-                <span className="fs-3">🛡️</span>
+                <FaShieldHalved size={24} />
               </div>
               <Card.Title className="fw-bold mb-3">Verified Safety</Card.Title>
               <Card.Text className="text-secondary">

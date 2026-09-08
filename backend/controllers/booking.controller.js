@@ -248,18 +248,12 @@ const getPaymentDetails = async (req, res) => {
     }
 
     // Build a unique transaction UUID 
-    // Must be unique per payment attempt → append Date.now()
-    // IMPORTANT: This same value must be used in both the `message` and `details`
-    // const transaction_uuid = `${booking._id}-${Date.now()}`;
     const transaction_uuid = `${booking._id}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
     //Build the signature message 
-    // eSewa requires EXACTLY these three fields in this order
-    // The transaction_uuid here must match the one sent in `details`
     const message = `total_amount=${booking.totalPrice},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`;
 
     // Generate HMAC-SHA256 signature 
-    //  eSewa sandbox secret (replace in production)
     const signature = crypto
       .createHmac("sha256", "8gBm/:&EnhH.1/q")
       .update(message)
@@ -273,23 +267,23 @@ const getPaymentDetails = async (req, res) => {
 
       transaction_uuid, // unique per payment attempt
 
-      product_code: "EPAYTEST", // eSewa sandbox merchant code (change in production)
+      product_code: "EPAYTEST",
 
       // These must be 0 if not applicable — eSewa still expects the fields
       tax_amount: 0,
       product_service_charge: 0,
-      product_delivery_charge: 0, // NOTE: old code had typo "delevery" → fixed
+      product_delivery_charge: 0, 
 
-      // Backend URL — eSewa will POST here on success
+      //  eSewa will POST here on success
       success_url: "http://localhost:8001/api/booking/confirm-payment",
 
-      // Frontend URL — eSewa will redirect here on failure
+      // eSewa will redirect here on failure
       failure_url: `http://localhost:5173/booking/${booking._id}`,
 
       // Tell eSewa which fields are included in the signature
       signed_field_names: "total_amount,transaction_uuid,product_code",
 
-      signature, // HMAC-SHA256 base64 — must match eSewa's own calculation
+      signature,
     };
 
     console.log("Payment Details:", details);
@@ -331,7 +325,7 @@ const ComfirmPayment = async (req, res) => {
     
 
     if (status == 'COMPLETE') {
-      const bookingId = transaction_uuid.split('-')[0]; // fixed: '-' not '_'
+      const bookingId = transaction_uuid.split('-')[0]; 
 
       const booking = await Booking.findById(bookingId);
       if (!booking) {

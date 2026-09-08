@@ -3,7 +3,7 @@ import License from "../Models/license.model.js";
 import nagarikta from "../Models/nagarikta.model.js";
 import Vehicles from "../Models/vechile.model.js";
 
-// ADD LICENSE — called by a regular (non-admin) user
+// ADD LICENSE 
 
 const addlicense = async (req, res) => {
   try {
@@ -145,10 +145,9 @@ const getAllLicense = async (req, res) => {
 const getMyLicense = async (req, res) => {
   try {
     // const userId = req.user._id;
-    const id = res.params.id;
-    
+    const id = req.params.id;
     // const myLicense = await License.findOne({ user: userId }).populate(
-    const myLicense = await License.findById(id).populate( 
+     const myLicense = await License.findById(id).populate(
 
       "nagarikta",
       "nagariktaNumber fullName issueDistrict",
@@ -205,7 +204,7 @@ const verifylicense = async (req, res) => {
 
 
 
-// CHECK CATEGORY MATCH — license category vs vehicle category
+//  license category vs vehicle category
 
 const cotogory = async (req, res) => {
   try {
@@ -254,7 +253,7 @@ const cotogory = async (req, res) => {
 
 const  getLicenseById   = async (req,res) =>{
   try{  
-    const id = res.params.id
+    const id = req.params.id;
      const license = await License.findById(id)
      .populate("nagarikta" , "nagariktaNumber fullName issueDistrict") 
      . populate("user", "firstName lastName email phoneNumber");

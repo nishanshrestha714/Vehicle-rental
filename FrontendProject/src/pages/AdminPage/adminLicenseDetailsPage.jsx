@@ -30,7 +30,7 @@ function AdminLicenseDetailPage() {
   console.log("this is license verify "  , verifyLicense)
 
   const [justVerified, setJustVerified] = useState(false);
-
+ 
   // Backend returns: { message, license: { ... } }
   const license = data?.license || data?.License || data;
   const isVerified = license?.verified || justVerified;

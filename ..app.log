@@ -6467,3 +6467,17 @@
 2026/9/8   13:2:12s :: GETon /api/license/6a9faf3517f77e9cdbb9333b   200  74ms
 2026/9/8   13:2:54s :: GETon /api/license   200  52ms
 2026/9/8   13:2:58s :: GETon /api/vehicle   304  46ms
+2026/9/8   13:14:39s :: GETon /api/vehicle/6a9a2fb53df96c2cf626957a   200  79ms
+2026/9/8   13:14:50s :: GETon /api/vehicle   304  65ms
+2026/9/8   13:14:54s :: GETon /api/vehicle/69c5ed4b192665c2c1779cad   304  16ms
+2026/9/8   13:15:29s :: GETon /api/nagarikta/mystatus   200  49ms
+2026/9/8   13:15:34s :: GETon /api/license/6a9faf3517f77e9cdbb9333b   304  72ms
+2026/9/8   13:15:37s :: GETon /api/booking   200  178ms
+2026/9/8   13:15:40s :: GETon /api/vehicle   304  42ms
+2026/9/8   13:16:0s :: DELETEon /api/vehicle/69e790129b85cb04b20e201d/delete   200  40ms
+2026/9/8   13:16:0s :: GETon /api/vehicle   200  43ms
+2026/9/8   13:16:5s :: DELETEon /api/vehicle/69cd3d3786e74125f33da519/delete   200  30ms
+2026/9/8   13:16:6s :: GETon /api/vehicle   200  29ms
+2026/9/8   13:28:28s :: GETon /api/nagarikta/mystatus   304  30ms
+2026/9/8   13:31:46s :: GETon /api/nagarikta/mystatus   304  24ms
+2026/9/8   13:42:10s :: GETon /api/booking/mybooking   304  77ms

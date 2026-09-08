@@ -6,4 +6,4 @@ const usersdetails = () => {
   )
 }
 
-export default usersdetails
+export default usersdetails;

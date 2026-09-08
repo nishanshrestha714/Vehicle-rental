@@ -126,14 +126,7 @@ function VehicleListPage() {
           </div>
         </div>
 
-        {/* Loading */}
-        {/* {isLoading && (
-          <div className="vx-skeleton-wrap">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="vx-skeleton-row" />
-            ))}
-          </div>
-        )} */}
+      
 
         {/* Error */}
         {!isLoading && error && (
@@ -250,14 +243,7 @@ function VehicleListPage() {
                       <td className="vx-rating"><FaStar/> {vehicle.rating ?? "—"}</td>
                       <td>
                         <div className="vx-actions">
-                          {/* <button className="vx-icon-btn" title="Edit" 
-                            as={Link}
-                            to={`/admin/vehicle/${vehicle._id}/edit`}
-                            // onClick={()=> editHandler(vehicle._id)}
-                              // onClick={() => editHandler(vehicle._id)} 
-                          >
-                            <FaEdit size={13} />
-                          </button> */}
+                         
 
                           <Link
   to={`/admin/vehicle/${vehicle._id}/edit`}

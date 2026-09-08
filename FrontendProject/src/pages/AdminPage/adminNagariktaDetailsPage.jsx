@@ -265,7 +265,7 @@ function AdminNagariktaDetailPage() {
                     Verifying...
                   </>
                 ) : (
-                  "✓ Verify Nagarikta"
+                  " Verify Nagarikta"
                 )}
               </Button>
             ) : (

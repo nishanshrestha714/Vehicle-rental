@@ -37,7 +37,7 @@ const register = async (req, res) => {
 
     //  Email validation
     // validator package le email format check garchha
-    // ex: "abc@gmail.com" — valid, "abcgmail" — invalid
+   
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email address." });
     };

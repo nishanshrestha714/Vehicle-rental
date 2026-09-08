@@ -1,6 +1,15 @@
 import { Link } from 'react-router';
 // import './VehicleCard/VehicleCard.css';
 import './VehicleCard.css';
+import { FaArrowRight } from "react-icons/fa";
+import { CiStar , CiSettings } from "react-icons/ci";
+import { FaGasPump } from "react-icons/fa6";
+import { MdElectricBolt } from "react-icons/md";
+import { FaLocationDot } from "react-icons/fa6";
+import { FaRoad } from "react-icons/fa";
+
+
+
 
 
 const StarRating = ({ value, numReview }) => {
@@ -12,7 +21,8 @@ const StarRating = ({ value, numReview }) => {
             key={star}
             className={`vc-star ${star <= Math.round(value) ? 'filled' : star - 0.5 <= value ? 'half' : ''}`}
           >
-            ★
+            <CiStar />
+
           </span>
         ))}
       </div>
@@ -22,7 +32,7 @@ const StarRating = ({ value, numReview }) => {
 };
 
 const FuelBadge = ({ fuelType }) => {
-  const icons = { petrol: '⛽', diesel: '🛢️', electric: '⚡' };
+  const icons = { petrol: <FaGasPump />, diesel: <FaGasPump />, electric:<MdElectricBolt /> };
   return (
     <span className={`vc-fuel-badge vc-fuel-${fuelType}`}>
       {icons[fuelType]} {fuelType}
@@ -98,16 +108,18 @@ function VehicleCard({ vehicle }) {
         {/* Specs row */}
         <div className="vc-specs">
           <div className="vc-spec">
-            <span className="vc-spec-icon">⚙️</span>
+            <span className="vc-spec-icon"><CiSettings /></span>
             <span>{gearSystem}</span>
           </div>
           <div className="vc-spec">
-            <span className="vc-spec-icon">📍</span>
+            <span className="vc-spec-icon"><FaLocationDot />
+</span>
             <span>{location}</span>
           </div>
           {mileage > 0 && (
             <div className="vc-spec">
-              <span className="vc-spec-icon">🛣️</span>
+              <span className="vc-spec-icon"><FaRoad />
+</span>
               <span>{mileage} km</span>
             </div>
           )}
@@ -137,7 +149,8 @@ function VehicleCard({ vehicle }) {
           </div>
 
           <Link to={`/vehicle/${_id}`} className="vc-btn">
-            View <span className="vc-btn-arrow">→</span>
+            View <span className="vc-btn-arrow"><FaArrowRight />
+</span>
           </Link>
         </div>
       </div>

@@ -266,7 +266,7 @@ function Vehiclepage() {
                     disabled={!vehicle.countInStock}
                     onClick={AddToCartHandler}
                   >
-                    {added ? "✓ Added to Cart!" : "🛒 Add to Cart"}
+                    {added ? " Added to Cart!" : " Add to Cart"}
                   </button>
                 </Form>
 

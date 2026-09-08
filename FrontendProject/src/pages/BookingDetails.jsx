@@ -453,7 +453,7 @@ const CompletedBookingHandler = async () => {
     type="button"
     variant="primary"
     className="w-100 fw-bold py-2"
-    disabled={!b?.payment?.isPaid}          // ← only check payment
+    disabled={!b?.payment?.isPaid}         
     onClick={handleRental}
   >
     Go To Rental

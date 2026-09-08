@@ -39,7 +39,7 @@ function VehicleEditPage() {
   const [uploadVehicleDocuments, { isLoading: uploadLoading }] =
     useUploadVehicleDocumentsMutation();
 
-  // ===== Fields =====
+  // Fields 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
@@ -74,7 +74,7 @@ function VehicleEditPage() {
   const [existingInsuranceUrl, setExistingInsuranceUrl] = useState("");
   const [existingDocumentsUrl, setExistingDocumentsUrl] = useState("");
 
-  // ===== Fill form when data loads =====
+  //  Fill form when data loads 
   useEffect(() => {
     if (!isEditMode || !vehicleData) return;
 

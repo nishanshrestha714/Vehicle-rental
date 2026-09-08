@@ -144,9 +144,12 @@ const getAllLicense = async (req, res) => {
 // GET MY LICENSE — logged-in user's own license record
 const getMyLicense = async (req, res) => {
   try {
-    const userId = req.user._id;
+    // const userId = req.user._id;
+    const id = res.params.id;
+    
+    // const myLicense = await License.findOne({ user: userId }).populate(
+    const myLicense = await License.findById(id).populate( 
 
-    const myLicense = await License.findOne({ user: userId }).populate(
       "nagarikta",
       "nagariktaNumber fullName issueDistrict",
     ).populate("user", "firstName lastName email phoneNumber");
@@ -249,4 +252,27 @@ const cotogory = async (req, res) => {
   }
 };
 
-export { addlicense, getAllLicense,    getMyLicense,verifylicense, cotogory };
+const  getLicenseById   = async (req,res) =>{
+  try{  
+    const id = res.params.id
+     const license = await License.findById(id)
+     .populate("nagarikta" , "nagariktaNumber fullName issueDistrict") 
+     . populate("user", "firstName lastName email phoneNumber");
+
+     if (license){
+          return res.status(404).json({error:"license not found"})
+     }
+
+        res.status(200).send({
+      message: "license detail",
+      license: license,
+    });
+
+
+  }
+  catch (err){
+    res.status(500).json({error:err.message});
+  }
+
+} 
+export { addlicense, getAllLicense,    getMyLicense,verifylicense, cotogory ,getLicenseById  };

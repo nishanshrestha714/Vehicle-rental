@@ -27,14 +27,15 @@ function AdminLicenseDetailPage() {
 
   const [verifyLicense, { isLoading: verifying }] = useVerifyLicenseMutation();
 
-  console.log("this is license verifyjgkjgk "  , verifyLicense)
+  console.log("this is license verify "  , verifyLicense)
 
   const [justVerified, setJustVerified] = useState(false);
 
   // Backend returns: { message, license: { ... } }
   const license = data?.license || data?.License || data;
   const isVerified = license?.verified || justVerified;
-  console.log("this is license", license);
+
+  console.log("this is license number ", license);
   console.log("this is verify",isVerified);
 
   const handleVerify = async () => {

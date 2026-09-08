@@ -34,8 +34,8 @@ const LicenseApiSlice = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `${LICENSE_URL}/${id}`,
       }),
-    //   providesTags: ["license"],
-      providesTags: (result, error, id) => [{ type: "license", id }],
+      providesTags: ["license"],
+      // providesTags: (result, error, id) => [{ type: "license", id }],
     }),
 
     // admin: verify a license (PUT /license/:id/verify)

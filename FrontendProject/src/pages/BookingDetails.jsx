@@ -131,7 +131,7 @@ const handleRental = () => {
   // }
 
   toast.success("Redirecting to rental...");
-  navigate(`/rental/${b._id}`);
+  navigate(`/rental/${b._id}`); 
 };
 
   // Safe read from Redux — optional chaining prevents crash if empty

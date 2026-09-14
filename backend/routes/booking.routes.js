@@ -6,7 +6,9 @@ import {
   getMyBooking,
   getPaymentDetails,
   ComfirmPayment,
-  BookingComplete
+  BookingComplete,
+  cancelBooking,
+  updateBooking
 } from "../controllers/booking.controller.js";
 import express from "express";
 import checkAuth from "../middleware/checkAuth.middleware.js";
@@ -21,6 +23,13 @@ router.get("/:id", checkAuth, getBookingById);
 router.get("/:id/get-payment-details"  ,checkAuth,getPaymentDetails);
 router.delete("/:id/delete", checkAdmin, deleteBooking);
 router.put("/:id/bookingConfirm", checkAuth,checkAdmin , BookingComplete);
+router.put("/:id/updated" , checkAuth , checkAdmin,updateBooking);
+// router.put("/:id/cancel" , checkAuth , cancelBooking);
+
+
 
 
 export default router;
+
+
+

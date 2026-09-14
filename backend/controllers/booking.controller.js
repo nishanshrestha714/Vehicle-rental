@@ -1,4 +1,6 @@
-// this is  my booking  controllers 
+
+// this is  my booking  controllers
+import mongoose from "mongoose";
 import Booking from "../Models/booking.vehicle.js";
 import nagarikta from "../Models/nagarikta.model.js";
 // import License from "../Models/license.model.js";
@@ -20,7 +22,7 @@ const addBooking = async (req, res) => {
       pickupLocation,
       dropLocation,
       nagariktaId,
-      bookingStatus,
+      // bookingStatus intentionally NOT taken from req.body — always starts false.
       License,
       payment,
     } = req.body;
@@ -29,45 +31,22 @@ const addBooking = async (req, res) => {
     console.log("userId", userId);
     console.log("req.body", req.body);
     console.log("REQ BODY =>", JSON.stringify(req.body, null, 2));
-    
- 
 
     // Check nagarikta exists
-    //  Check if user has added Nagarikta
     const userNagarikta = await nagarikta.findOne({ user: userId });
     if (!userNagarikta) {
       return res.status(400).json({
         error: "Please add your Nagarikta first before booking a vehicle.",
       });
     }
-    //  license check and exits
     const userLicense = await LicenseModel.findOne({ user: userId });
     if (!userLicense) {
       return res.status(400).json({ error: "Please add your license first." });
     }
 
-    //  // Check nagarikta verified
-    // if (!userNagarikta.verified) {
-    //   return res.status(400).json({
-    //     error: "Nagarikta not verified! Please wait for admin verification.",
-    //   });
-    // }
-
-    //  // in citizen verify in the code add in  this 
-
-    // if (!req.file){
-    //   return 
-    //    res.status(400).json({error:"this image is erquired!"});
-    // };
-
-
-
     // Validate booking period
     const startTime = new Date(bookingPeriod.start);
     const endTime = new Date(bookingPeriod.end);
-    //     if (startTime >= endTime) {
-//       return res.status(400).json({ error: "Invalid booking time range" });
-//     }
 
     if (isNaN(startTime) || isNaN(endTime)) {
       return res.status(400).json({ error: "Invalid booking dates!" });
@@ -78,22 +57,23 @@ const addBooking = async (req, res) => {
         .json({ error: "Return date must be after pickup date!" });
     }
 
-    // Check duplicate booking for same vehicle and overlapping time
+    // Check duplicate/overlapping booking for same vehicle
     const checkBook = await Booking.findOne({
       "vehicle.vehicleId": vehicle.vehicleId,
-      user: userId,
+      isCancelled: false,
       $and: [
         { "bookingPeriod.start": { $lt: endTime } },
         { "bookingPeriod.end": { $gt: startTime } },
       ],
     });
-    // if (checkBook) {
-    //   return res.status(409).json({
-    //     error: "You already have a booking for this vehicle in this period!",
-    //   });
-    // }
+    if (checkBook) {
+      return res.status(409).json({
+        error: "This vehicle is already booked for the selected dates!",
+      });
+    }
 
-    // Create booking
+    // Create booking — bookingStatus/isCancelled always start at their
+    // defaults (false); never trust these from the client.
     const booking = await Booking.create({
       user: userId,
       nagariktaId,
@@ -104,24 +84,20 @@ const addBooking = async (req, res) => {
       totalPrice,
       pickupLocation,
       dropLocation,
-      bookingStatus,
-     payment: {
-    method: payment?.method || "COD",  
-  },
-
+      payment: {
+        method: payment?.method || "COD",
+      },
     });
 
     res
       .status(201)
       .json({ message: "Booking added successfully!", bookingId: booking._id });
   } catch (err) {
-    res.status(500).json({ error: err.message }); 
-    // res.status(500).send({ error: "add booking  failed!" ,   error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
- // const totalDays = Math.ceil((new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24))
 
-  // and view all order in admin only for
+// and view all order in admin only for
 const getAllBooking = async (req, res) => {
   try {
     const AllBookingDetails = await Booking.find()
@@ -142,7 +118,6 @@ const getAllBooking = async (req, res) => {
 const getBookingById = async (req, res) => {
   try {
     const { id } = req.params;
-    
 
     const bookingId = await Booking.findById(id)
       .populate("user", "firstName lastName email -_id")
@@ -157,7 +132,8 @@ const getBookingById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-// get my bookin details
+
+// get my booking details
 const getMyBooking = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -176,7 +152,110 @@ const getMyBooking = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
- // booking commpleted to delete this booking list
+
+// Update a booking (dates / pickup / drop location) — user can only edit their own
+const updateBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const { bookingPeriod, pickupLocation, dropLocation } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid booking ID" });
+    }
+
+    const booking = await Booking.findById(id);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found!" });
+    }
+
+    if (booking.user.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "You can only update your own booking" });
+    }
+
+    // Don't allow edits once the booking is finalized (completed or cancelled)
+    if (booking.isCancelled || booking.bookingStatus) {
+      return res.status(400).json({ error: "This booking can no longer be edited" });
+    }
+
+    let startTime = booking.bookingPeriod.start;
+    let endTime = booking.bookingPeriod.end;
+
+    if (bookingPeriod?.start && bookingPeriod?.end) {
+      startTime = new Date(bookingPeriod.start);
+      endTime = new Date(bookingPeriod.end);
+
+      if (isNaN(startTime) || isNaN(endTime)) {
+        return res.status(400).json({ error: "Invalid booking dates!" });
+      }
+      if (startTime >= endTime) {
+        return res.status(400).json({ error: "Return date must be after pickup date!" });
+      }
+
+      const overlapping = await Booking.findOne({
+        _id: { $ne: booking._id },
+        "vehicle.vehicleId": booking.vehicle.vehicleId,
+        isCancelled: false,
+        $and: [
+          { "bookingPeriod.start": { $lt: endTime } },
+          { "bookingPeriod.end": { $gt: startTime } },
+        ],
+      });
+
+      if (overlapping) {
+        return res.status(400).json({
+          error: "This vehicle is already booked for the selected dates",
+        });
+      }
+    }
+
+    booking.bookingPeriod = { start: startTime, end: endTime };
+    booking.pickupLocation = pickupLocation || booking.pickupLocation;
+    booking.dropLocation = dropLocation || booking.dropLocation;
+
+    await booking.save();
+
+    res.status(200).json({ message: "Booking updated successfully!", booking });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Cancel a booking — user can only cancel their own, before it's finalized
+const cancelBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid booking ID" });
+    }
+
+    const booking = await Booking.findById(id);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found!" });
+    }
+
+    if (booking.user.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "You can only cancel your own booking" });
+    }
+
+    if (booking.isCancelled || booking.bookingStatus) {
+      return res.status(400).json({ error: "This booking can't be cancelled" });
+    }
+
+    booking.isCancelled = true;
+    booking.cancelledAt = new Date();
+    await booking.save();
+
+    res.status(200).json({ message: "Booking cancelled successfully!", booking });
+  } catch (err) {
+    // next(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// booking completed to delete this booking list
 const deleteBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -192,53 +271,10 @@ const deleteBooking = async (req, res) => {
   }
 };
 
-// const getPaymentDetails = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     const booking = await Booking.findById(id);
-
-//     if (!booking) {
-//       return res.status(404).json({
-//         error: "Vehicle not found",
-//       });
-//     }
-
-//     const details = {
-//       amount: booking.vehicle?.pricePerDay,
-//       total_amount: booking.totalPrice,
-//       // transaction_uuid: booking._id,
-//       transaction_uuid: `${booking._id}-${Date.now()}`,
-//       product_code: "EPAYTEST",
-//       product_service_charge: 0,
-//       product_delevery_charge: 0,
-//       success_url: "http://localhost:8001/api/booking/comfirm-payment",
-//       failure_url: `http://localhost:5173/booking/${booking._id}`,
-//       signed_field_names:
-//         "total_amount,transaction_uuid,product_code",
-//       signature: crypto
-//         .createHmac("sha256", "8gBm/:&EnhH.1/q")
-//         .update(
-//           `total_amount=${booking.totalPrice},transaction_uuid=${booking._id},product_code=EPAYTEST`
-//         )
-//         .digest("base64"),
-//     };
-
-//     res.json({ details });
-//   } catch (error) {
-//     console.error("Payment Details Error:", error);
-//     res.status(500).json({
-//       error: error.message,
-//     });
-//   }
-// };
-
-
 const getPaymentDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Find the booking 
     const booking = await Booking.findById(id);
 
     if (!booking) {
@@ -247,59 +283,35 @@ const getPaymentDetails = async (req, res) => {
       });
     }
 
-    // Build a unique transaction UUID 
     const transaction_uuid = `${booking._id}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
-    //Build the signature message 
     const message = `total_amount=${booking.totalPrice},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`;
 
-    // Generate HMAC-SHA256 signature 
     const signature = crypto
       .createHmac("sha256", "8gBm/:&EnhH.1/q")
       .update(message)
       .digest("base64");
 
-    // Build the payment details payload 
     const details = {
-      // `amount` = base amount (before tax/charges), `total_amount` = final charged amount
       amount: booking.totalPrice,
       total_amount: booking.totalPrice,
-
-      transaction_uuid, // unique per payment attempt
-
+      transaction_uuid,
       product_code: "EPAYTEST",
-
-      // These must be 0 if not applicable — eSewa still expects the fields
       tax_amount: 0,
       product_service_charge: 0,
-      product_delivery_charge: 0, 
-
-      //  eSewa will POST here on success
+      product_delivery_charge: 0,
       success_url: "http://localhost:8001/api/booking/confirm-payment",
-
-      // eSewa will redirect here on failure
       failure_url: `http://localhost:5173/booking/${booking._id}`,
-
-      // Tell eSewa which fields are included in the signature
       signed_field_names: "total_amount,transaction_uuid,product_code",
-
       signature,
     };
 
     console.log("Payment Details:", details);
 
-    console.log("Sending to eSewa:", {
-  total_amount: details.total_amount,
-  transaction_uuid: details.transaction_uuid,
-  product_code: details.product_code,
-  signature: details.signature,
-});
-
     return res.status(200).json({
       success: true,
       details,
     });
-
   } catch (error) {
     console.error("Payment Details Error:", error);
 
@@ -310,66 +322,49 @@ const getPaymentDetails = async (req, res) => {
   }
 };
 
-// comfirm Payment 
-
+// confirm Payment
 const ComfirmPayment = async (req, res) => {
   try {
     const { data } = req.query;
     if (!data) {
-  return res.status(400).json({ message: "Missing eSewa data" });
-}
+      return res.status(400).json({ message: "Missing eSewa data" });
+    }
     const { status, transaction_uuid } = JSON.parse(
       Buffer.from(data, 'base64').toString('utf-8')
     );
     console.log( ' this is data ', data);
-    
 
     if (status == 'COMPLETE') {
-      const bookingId = transaction_uuid.split('-')[0]; 
+      const bookingId = transaction_uuid.split('-')[0];
 
       const booking = await Booking.findById(bookingId);
       if (!booking) {
         return res.status(404).json({ message: 'Booking not found' });
       }
-console.log("Booking Found:", booking);
+      console.log("Booking Found:", booking);
 
       booking.payment.isPaid = true;
-booking.payment.paidAt = Date.now();
-    // booking.bookingStatus = true; 
-await booking.save();
+      booking.payment.paidAt = Date.now();
+      await booking.save();
 
       return res.redirect(`http://localhost:5173/bookingdetails/${bookingId}`);
-      // return res.redirect(`http://localhost:5173/api/booking/${bookingId}`);
-
-
     }
 
     return res.json(status);
   } catch (error) {
-  console.error("CONFIRM PAYMENT ERROR:", error);
+    console.error("CONFIRM PAYMENT ERROR:", error);
 
-  return res.status(500).json({
-    message: 'Payment confirmation failed',
-    error: error.message,
-    stack: error.stack
-  });
-}
+    return res.status(500).json({
+      message: 'Payment confirmation failed',
+      error: error.message,
+      stack: error.stack
+    });
+  }
 };
-
-//  const BookingComplete  = async(req,res)=>{
-//   try{
-//      const booking = await Booking.findById(bookingId);
-//       if (!booking) {
-//         return res.status(404).json({ message: 'Booking not found' });
-//       }
-//   }  catch(err){
-//     console.log({error:err.message})
-//   }
-//  }
 
 const BookingComplete = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     const booking = await Booking.findById(id);
 
@@ -381,6 +376,7 @@ const BookingComplete = async (req, res) => {
     }
 
     booking.bookingStatus = true;
+    booking.bookingStatusAt = new Date();
     await booking.save();
 
     return res.status(200).json({
@@ -401,6 +397,8 @@ export {
   getAllBooking,
   getBookingById,
   getMyBooking,
+  updateBooking,
+  cancelBooking,
   deleteBooking,
   getPaymentDetails,
   ComfirmPayment,

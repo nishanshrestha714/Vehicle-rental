@@ -1,19 +1,23 @@
+
 import mongoose from "mongoose";
 import Vehicles from "../Models/vechile.model.js";
 import rentVechile from "../Models/rent.model.js";
 import Booking from "../Models/booking.vehicle.js";
 import License from "../Models/license.model.js";
+
 const addVehicleRent = async (req, res) => {
   try {
-    // user login and find
-    const userId = req.user._id;
-    if (!userId)
-      return res
-        .status(401)
-        .json({ error: "user not login please login  and try again" });
-    // destructure
+    // Get logged-in user ID
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Please login first",
+      });
+    }
+
+    // Get data from request body
     const {
-      License,
       vehicle,
       vehicleDetails,
       BookingTime,
@@ -23,143 +27,222 @@ const addVehicleRent = async (req, res) => {
       payment,
     } = req.body;
 
-    // check the vechle id  and vehicle find the vehicle database
+    // Check required fields
+    if (!vehicle) {
+      return res.status(400).json({
+        error: "Vehicle ID is required",
+      });
+    }
+
+    if (!vehicleDetails?.bookingId) {
+      return res.status(400).json({
+        error: "Booking ID is required",
+      });
+    }
+
+    if (!BookingTime?.start || !BookingTime?.end) {
+      return res.status(400).json({
+        error: "Booking start and end time are required",
+      });
+    }
+
+    // Check vehicle ID
     if (!mongoose.Types.ObjectId.isValid(vehicle)) {
-      return res.status(400).json({ error: "Invalid vehicle ID" });
+      return res.status(400).json({
+        error: "Invalid vehicle ID",
+      });
     }
-    // and so check the vechile booking database in booking id to perticular user booking
+
+    // Check booking ID
     if (!mongoose.Types.ObjectId.isValid(vehicleDetails.bookingId)) {
-      return res.status(400).json({ error: "Invalid booking ID" });
+      return res.status(400).json({
+        error: "Invalid booking ID",
+      });
     }
 
-    // check db vehiclelist in db
+    // Convert booking time to Date
+    const startDate = new Date(BookingTime.start);
+    const endDate = new Date(BookingTime.end);
+
+    // Check valid dates
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return res.status(400).json({
+        error: "Invalid booking date/time",
+      });
+    }
+
+    // Check start time is before end time
+    if (startDate >= endDate) {
+      return res.status(400).json({
+        error: "Start time must be before end time",
+      });
+    }
+
+    // Find vehicle in database
     const targetVehicle = await Vehicles.findById(vehicle);
+
     if (!targetVehicle) {
-      return res.status(404).json({ error: "Vehicle not found" });
+      return res.status(404).json({
+        error: "Vehicle not found",
+      });
     }
 
+    // Find booking in database
     const booking = await Booking.findById(vehicleDetails.bookingId);
+
     if (!booking) {
-      return res.status(404).json({ error: "Booking reference not found" });
+      return res.status(404).json({
+        error: "Booking reference not found",
+      });
     }
 
-    // check in the license verify in  isAdmin  true  ot not
-
-    const userlicense = await License.findOne({ user: userId });
-    if (!userlicense) {
-      return res
-        .status(404)
-        .json({ error: "License not found, please add your license first!" });
-    }
-
-    if (!userlicense.verified) {
-      return res
-        .status(400)
-        .json({
-          error: "License is not verified, please wait for verification!",
-        });
-    }
-    //check license category and vehicle category match or not
-
-    // and so perticular user vehicle book and rent sucess
-
-    const isAlreadyRented = await rentVechile.findOne({ vehicle });
-    if (isAlreadyRented) {
-      return res
-        .status(400)
-        .json({
-          error: "This vehicle is already rented",
-          "BookingTime.start": BookingTime.end,
-          "BookingTime.end": BookingTime.start,
-        });
-    }
-    // booking.user le booked gareko vehicle ko user id ho  and current userId check  login user id ho  check garne
+    // Check booking belongs to logged-in user
     if (booking.user.toString() !== userId.toString()) {
       return res.status(403).json({
         error: "You can only rent vehicles that you booked",
       });
     }
 
-    // and license verify or not check in this
+    // Find user's license
+    const userlicense = await License.findOne({ user: userId });
 
+    if (!userlicense) {
+      return res.status(404).json({
+        error: "License not found. Please add your license first",
+      });
+    }
+
+    // Check license verification
+    if (!userlicense.verified) {
+      return res.status(400).json({
+        error: "License is not verified. Please wait for verification",
+      });
+    }
+
+    // Check vehicle category and license category if needed
+    // if (userlicense.category !== targetVehicle.category) {
+    //   return res.status(400).json({
+    //     error: "Your license cannot be used for this vehicle",
+    //   });
+    // }
+
+    // Check if vehicle is already rented during this time (overlap check)
+    const isAlreadyRented = await rentVechile.findOne({
+      vehicle: vehicle,
+      "BookingTime.start": { $lt: endDate },
+      "BookingTime.end": { $gt: startDate },
+    });
+
+    if (isAlreadyRented) {
+      return res.status(400).json({
+        error: "This vehicle is already rented during this time",
+        existingBookingTime: isAlreadyRented.BookingTime,
+      });
+    }
+
+    // Create new rental
     const newRent = await rentVechile.create({
-      user: req.user._id,
-      vehicle,
-      license,
-      vehicleDetails,
-      BookingTime,
+      user: userId,
+      vehicle: vehicle,
+      license: userlicense._id,
+
+      vehicleDetails: {
+        bookingId: vehicleDetails.bookingId,
+      },
+
+      BookingTime: {
+        start: startDate,
+        end: endDate,
+      },
+
       totalDays,
       pickuplocation,
       droplocation,
-      payment,
+      paymentMethod: payment || "COD",
+      isPaid: false,
     });
 
-    res.status(201).json({
-      message: "Vehicle added to rent successfully",
-      rantaldata: newRent,
+    // Send success response
+    return res.status(201).json({
+      message: "Vehicle rented successfully",
+      rentalData: newRent,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Add Vehicle Rent Error:", error);
+
+    return res.status(500).json({
+      error: error.message,
+    });
   }
 };
 
-// and get all vehicle rent
-
+// Get all rentals
 const getAllRentals = async (req, res) => {
   try {
     const rentals = await rentVechile
       .find()
       .populate("vehicle", "name model -_id")
       .populate("user", "firstName lastName email phoneNumber -_id");
-    if (!rentals) {
-      return res.status(404).send({ error: "rentals vehicle are not found!" });
+
+    // .find() returns [] when empty, never null/undefined — check length instead
+    if (!rentals || rentals.length === 0) {
+      return res.status(404).send({ error: "No rentals found!" });
     }
-    res.status(200).send({ message: "rentals vehicle ...", rentals });
+
+    res.status(200).send({ message: "Rentals list", rentals });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// get rent by id
-
+// Get rent by id
 const getrentalById = async (req, res) => {
   try {
     const { id } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      console.log(id);
       return res.status(400).json({ error: "Invalid rental ID" });
     }
+
     const rentalById = await rentVechile
       .findById(id)
       .populate("user", "email -_id")
       .populate("vehicle", "name model vehicleNumber");
 
     if (!rentalById)
-      return res.status(404).send({ error: "you are not rent  for vehicle!" });
+      return res.status(404).send({ error: "Rental not found!" });
 
-    res.status(200).json({ message: "you  rent vehicle list ..", rentalById });
+    res.status(200).json({ message: "Rental detail", rentalById });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-//and update this rentals
+// Update rental
 const updateRental = async (req, res) => {
   try {
-    // update in key  find req.body
-
     const { BookingTime, totalDays, pickuplocation, droplocation } = req.body;
     const { id } = req.params;
-    // user find in update rental
-    const userId = req.user._id;
-    // and check the rental id valid ro nor valid
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).send({ errr: "please valid rental ID  inter" });
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Please login first" });
     }
-    // check this rental vehicle
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send({ error: "Please enter a valid rental ID" });
+    }
+
     const checkrental = await rentVechile.findById(id);
     if (!checkrental)
-      return res.status(404).send({ error: "not found rental vechile" });
+      return res.status(404).send({ error: "Rental vehicle not found" });
+
+    // Ownership check — only the user who owns this rental can update it
+    if (checkrental.user.toString() !== userId.toString()) {
+      return res.status(403).json({
+        error: "You can only update your own rental",
+      });
+    }
 
     checkrental.BookingTime = BookingTime || checkrental.BookingTime;
     checkrental.totalDays = totalDays || checkrental.totalDays;
@@ -167,28 +250,44 @@ const updateRental = async (req, res) => {
     checkrental.droplocation = droplocation || checkrental.droplocation;
     await checkrental.save();
 
-    res.send({ message: "update rental", checkrental });
+    res.status(200).send({ message: "Rental updated", checkrental });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-// delete rental
 
+// Delete rental
 const deleteRental = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Please login first" });
+    }
+
     if (!mongoose.Types.ObjectId.isValid(id))
       return res
-        .status(404)
-        .send({ error: " rental id not  valid please try valid id" });
+        .status(400)
+        .send({ error: "Rental ID is not valid, please try a valid id" });
 
-    const deleterent = await rentVechile.findByIdAndDelete(id);
-    if (!deleterent)
-      return res
-        .status(404)
-        .send({ error: "this rental not found in the database" });
+    const rental = await rentVechile.findById(id);
+    if (!rental)
+      return res.status(404).send({ error: "This rental was not found" });
 
-    res.status(200).send({ message: "delete this rental" });
+    // Ownership check — only the owner (or an admin) can delete it
+    const isOwner = rental.user.toString() === userId.toString();
+    const isAdmin = req.user?.isAdmin === true;
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        error: "You are not authorized to delete this rental",
+      });
+    }
+
+    await rental.deleteOne();
+
+    res.status(200).send({ message: "Rental deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

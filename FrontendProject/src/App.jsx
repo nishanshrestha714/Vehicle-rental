@@ -67,7 +67,7 @@ function App() {
               <Route path="payment" element={<PaymentPage />} />
               <Route path="license" element={<LicensePage />} />
               <Route path="booking" element={<BookingPage />} />
-              <Route path="rental" element={<RentalPage />} />
+              <Route path="rental/:id" element={<RentalPage />} />
 
               {/* <Route path="/booking/:id" element={<BookingPage />} /> */}
 

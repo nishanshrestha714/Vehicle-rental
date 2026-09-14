@@ -1,3 +1,4 @@
+
 import { BOOKING_URL, MYBOOKING_LIST } from "../constant";
 import apiSlice from "./Apislices";
 const BookingApiSlice = apiSlice.injectEndpoints({
@@ -8,12 +9,15 @@ const BookingApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Booking"],
     }),
     getMyBooking: builder.query({
       query: () => ({
         url: `${MYBOOKING_LIST}`,
         method: "GET",
       }),
+      keepUnusedDataFor: 5,
+      providesTags: ["Booking"],
     }),
     getBookingById: builder.query({
       query: (bookingId) => ({
@@ -33,6 +37,7 @@ const BookingApiSlice = apiSlice.injectEndpoints({
         url: `${BOOKING_URL}`,
       }),
       keepUnusedDataFor: 5,
+      providesTags: ["Booking"],
     }),
     CompletedBooking: builder.mutation({
       query: ({ bookingId }) => ({
@@ -40,6 +45,26 @@ const BookingApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
       }),
       keepUnusedDataFor: 5,
+      invalidatesTags: ["Booking"],
+    }),
+
+    // Update an existing booking (dates / pickup / drop location).
+    // Expects: { id, bookingPeriod: { start, end }, pickupLocation, dropLocation }
+    updateBooking: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `${BOOKING_URL}/${id}/updated`, 
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Booking"],
+    }),
+
+    // Cancel a booking. Expects the bookingId as the argument.
+    cancelBooking: builder.mutation({
+      query: (bookingId) => ({
+        url: `${BOOKING_URL}/${bookingId}/cancel`,
+        method: "PUT",
+      }),
       invalidatesTags: ["Booking"],
     }),
   }),
@@ -51,5 +76,7 @@ export const {
   useGetBookingByIdQuery,
   useEsewaPaymentDetailsQuery,
   useGetAllbookingQuery,
-  useCompletedBookingMutation
+  useCompletedBookingMutation,
+  useUpdateBookingMutation,
+  useCancelBookingMutation,
 } = BookingApiSlice;

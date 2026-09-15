@@ -92,6 +92,9 @@ function Header() {
                       <NavDropdown.Item as={NavLink} to="/admin/license">
                       License-Page
                     </NavDropdown.Item>
+                     <NavDropdown.Item as={NavLink} to="/admin/contact">
+                      Contact-Page
+                    </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item
                       onClick={() => {

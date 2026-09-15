@@ -119,13 +119,6 @@ const addVehicleRent = async (req, res) => {
       });
     }
 
-    // Check vehicle category and license category if needed
-    // if (userlicense.category !== targetVehicle.category) {
-    //   return res.status(400).json({
-    //     error: "Your license cannot be used for this vehicle",
-    //   });
-    // }
-
     // Check if vehicle is already rented during this time (overlap check)
     const isAlreadyRented = await rentVechile.findOne({
       vehicle: vehicle,
@@ -184,7 +177,6 @@ const getAllRentals = async (req, res) => {
       .populate("vehicle", "name model -_id")
       .populate("user", "firstName lastName email phoneNumber -_id");
 
-    // .find() returns [] when empty, never null/undefined — check length instead
     if (!rentals || rentals.length === 0) {
       return res.status(404).send({ error: "No rentals found!" });
     }
@@ -237,7 +229,6 @@ const updateRental = async (req, res) => {
     if (!checkrental)
       return res.status(404).send({ error: "Rental vehicle not found" });
 
-    // Ownership check — only the user who owns this rental can update it
     if (checkrental.user.toString() !== userId.toString()) {
       return res.status(403).json({
         error: "You can only update your own rental",
@@ -275,7 +266,6 @@ const deleteRental = async (req, res) => {
     if (!rental)
       return res.status(404).send({ error: "This rental was not found" });
 
-    // Ownership check — only the owner (or an admin) can delete it
     const isOwner = rental.user.toString() === userId.toString();
     const isAdmin = req.user?.isAdmin === true;
 
@@ -293,10 +283,159 @@ const deleteRental = async (req, res) => {
   }
 };
 
+/**
+ * Complete rental — user le "Mark Complete" click garda:
+ *  1. Booking fetch garcha ra ownership check garcha
+ *  2. Tyo booking ko data bata ek naya `rentVechile` document CREATE garcha (database ma save)
+ *  3. Booking.bookingStatus = true set garcha (status "completed" dekhinxa frontend ma)
+ *
+ * Body ma kehi extra pathauna chahiyena — booking document bata sabai data lincha.
+ */
+const completeRental = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Please login first" });
+    }
+
+    const { id } = req.params; // booking id
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid booking ID" });
+    }
+
+    // 1) Booking fetch + populate vehicle so we know the vehicle id
+    const booking = await Booking.findById(id);
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    const isOwner = booking.user.toString() === userId.toString();
+    const isAdmin = req.user?.isAdmin === true;
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        error: "You are not authorized to complete this booking",
+      });
+    }
+
+    if (booking.isCancelled) {
+      return res.status(400).json({
+        error: "Cancelled bookings cannot be marked as completed",
+      });
+    }
+
+    if (booking.bookingStatus) {
+      return res.status(400).json({
+        error: "This booking is already marked as completed",
+      });
+    }
+
+    // Vehicle id might be stored directly, or nested under vehicleId, depending on your Booking schema
+    // const vehicleId = booking.vehicle?._id || booking.vehicle || booking.vehicleId;
+
+    // if (!vehicleId) {
+    //   return res.status(400).json({
+    //     error: "Booking has no vehicle reference, cannot create rental",
+    //   });
+    // }
+    const vehicleId = booking.vehicle?.vehicleId;
+
+if (vehicleId) {
+  const vehicle = await Vehicle.findById(vehicleId);
+}
+
+
+    const targetVehicle = await Vehicles.findById(vehicleId);
+    if (!targetVehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+
+    // 2) User's license (rental record requires a license reference)
+    const userlicense = await License.findOne({ user: userId });
+    if (!userlicense) {
+      return res.status(404).json({
+        error: "License not found. Please add your license first",
+      });
+    }
+
+    if (!userlicense.verified) {
+      return res.status(400).json({
+        error: "License is not verified. Please wait for verification",
+      });
+    }
+
+    // Pull dates/locations/payment off the booking document
+    const startDate = new Date(booking.bookingPeriod?.start);
+    const endDate = new Date(booking.bookingPeriod?.end);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return res.status(400).json({
+        error: "Booking has invalid start/end date, cannot create rental",
+      });
+    }
+
+    // Prevent duplicate rental record for the same booking
+    const existingRentForBooking = await rentVechile.findOne({
+      "vehicleDetails.bookingId": booking._id,
+    });
+
+    if (existingRentForBooking) {
+      // Rental already exists — just make sure booking is marked complete and return it
+      booking.bookingStatus = true;
+      await booking.save();
+
+      return res.status(200).json({
+        message: "Booking already had a rental record — booking marked completed",
+        rentalData: existingRentForBooking,
+        booking,
+      });
+    }
+
+    // 3) Create the rental record from booking data
+    const newRent = await rentVechile.create({
+      user: userId,
+      vehicle: vehicleId,
+      license: userlicense._id,
+
+      vehicleDetails: {
+        bookingId: booking._id,
+      },
+
+      BookingTime: {
+        start: startDate,
+        end: endDate,
+      },
+
+      totalDays: booking.totalDays,
+      pickuplocation: booking.pickupLocation,
+      droplocation: booking.dropLocation,
+      paymentMethod: booking.payment?.method || "COD",
+      isPaid: booking.payment?.isPaid || false,
+    });
+
+    // 4) Mark the booking as completed
+    booking.bookingStatus = true;
+    await booking.save();
+
+    return res.status(200).json({
+      message: "Rental marked as completed and saved",
+      rentalData: newRent,
+      booking,
+    });
+  } catch (err) {
+    console.error("Complete Rental Error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 export {
   addVehicleRent,
   getAllRentals,
   getrentalById,
   updateRental,
   deleteRental,
+  completeRental,
 };

@@ -53,6 +53,26 @@ const VehicleApislice = apiSlice.injectEndpoints({
     body: formData,
   }),
 }),
+// addd review function code 
+// and submit a review  for  a  vehicle 
+ addReview:builder.mutation({
+  query:({vehicleId , ...data}) =>({
+    url:`${VEHICLE_URL}/${vehicleId}/review`,
+    method:"POST",
+    body:data,
+  }),
+  invalidatesTags:['vehicle']
+ }),
+
+ updateReview :builder.mutation({
+  query:({vehicleId , reviewId , ...data})=>({
+    url:`${VEHICLE_URL}/${vehicleId}/review/${reviewId}`,
+    method:"PUT",
+    body:data,
+
+  }),
+  invalidatesTags:["vehicle"],
+ })
   }),
 });
 
@@ -63,4 +83,6 @@ export const {
   useDeleteVehicleMutation,
   useUpdateVehicleMutation,
   useUploadVehicleDocumentsMutation,
+  useAddReviewMutation,
+  useUpdateReviewMutation
 } = VehicleApislice;

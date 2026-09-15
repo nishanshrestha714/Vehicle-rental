@@ -116,7 +116,7 @@ function LicensePage() {
 
       //  Call the license API
       const res = await LicenseApi(licenseDate).unwrap();
-      console.log("this is license", res); // 🔧 Remove in production
+      console.log("this is license", res); //  Remove in production
 
       dispatch(
         SaveLicense({

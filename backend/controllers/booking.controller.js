@@ -140,7 +140,7 @@ const getMyBooking = async (req, res) => {
 
     const MyBooking = await Booking.find({ user: userId }).populate(
       "vehicle.vehicleId",
-      "name vehicleNumber image -_id",
+      "name vehicleNumber image ",
     );
 
     if (!MyBooking || MyBooking.length === 0) {
@@ -191,7 +191,7 @@ const updateBooking = async (req, res) => {
       if (startTime >= endTime) {
         return res.status(400).json({ error: "Return date must be after pickup date!" });
       }
-
+      
       const overlapping = await Booking.findOne({
         _id: { $ne: booking._id },
         "vehicle.vehicleId": booking.vehicle.vehicleId,

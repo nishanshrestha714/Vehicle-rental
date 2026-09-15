@@ -160,66 +160,268 @@ const getVehicleById = async (req, res) => {
 };
 
 //so add in review system in add project
-const addreview = async (req, res) => {
+  // const addreview = async (req, res) => {
+  //   try {
+  //     const body = req.body || {};
+  //     const { title, comment, rating } = body;
+  //     if (!title || !comment) {
+  //       return res.status(400).send({ error: "missing details in review" });
+  //     }
+  //     //and review check for 1 to max 5
+  //     if (rating < 1 || rating > 5) {
+  //       return res
+  //         .status(400)
+  //         .send({ error: "rating must be between 1 to 5 only" });
+  //     }
+  //     const user = req.user._id;
+  //     // chek user login or not
+  //     if (!user) {
+  //       return res.status(401).send({ error: "user not login" });
+  //     }
+  //     const { vehicleId: reViewVehicleId } = req.params;
+
+  //     if (!reViewVehicleId) {
+  //       return res.status(400).json({ error: "Vehicle ID is required in URL" });
+  //     }
+  //     // so find the vehicle in vehicle list
+  //     const vehicle = await Vehicles.findById(reViewVehicleId);
+
+  //     if (!vehicle) return res.status(404).send({ error: "vehicle not found" });
+  //     //and check you already review ro not
+  //     const alreadyreviewed = vehicle.reviews.find(
+  //       (review) => review.user.toString() == user,
+  //     );
+  //     if (alreadyreviewed)
+  //       return res.status(400).send({ error: "you already review this vehilce" });
+
+  //     // so not review xa vane review garna pauxa
+  //     vehicle.reviews.push({
+  //       title,
+  //       comment,
+  //       rating,
+  //       user,
+  //     });
+
+  //     vehicle.numReview += 1;
+  //     // and so total rating calculate
+
+  //     const totalrating = vehicle.reviews.reduce(
+  //       (acc, review) => acc + review.rating,
+  //       0,
+  //     );
+  //     /// so calcuale in the reting avrage
+  //     vehicle.rating = (totalrating / vehicle.numReview).toFixed(2);
+  //     await vehicle.save();
+
+  //     res.status(201).json({ message: "Review added successfully" });
+  //   } catch (err) {
+  //     res
+  //       .status(500)
+  //       .json({ error: "internal server error: " + err.message });
+  //   }
+  // };
+
+  const addreview = async (req, res) => {
   try {
-    const body = req.body || {};
-    const { title, comment, rating } = body;
-    if (!title || !comment) {
-      return res.status(400).send({ error: "missing details in review" });
+    const { title, comment, rating } = req.body || {};
+
+    // Check required fields
+    if (!title?.trim() || !comment?.trim()) {
+      return res.status(400).json({
+        error: "Title and comment are required",
+      });
     }
-    //and review check for 1 to max 5
-    if (rating < 1 || rating > 5) {
-      return res
-        .status(400)
-        .send({ error: "rating must be between 1 to 5 only" });
+
+    // Check rating
+    const numericRating = Number(rating);
+
+    if (
+      !Number.isInteger(numericRating) ||
+      numericRating < 1 ||
+      numericRating > 5
+    ) {
+      return res.status(400).json({
+        error: "Rating must be an integer between 1 and 5",
+      });
     }
-    const user = req.user._id;
-    // chek user login or not
+
+    // Check logged-in user
+    const user = req.user?._id;
+
     if (!user) {
-      return res.status(401).send({ error: "user not login" });
+      return res.status(401).json({
+        error: "User not logged in",
+      });
     }
-    const { vehicleId: reViewVehicleId } = req.params;
 
-    if (!reViewVehicleId) {
-      return res.status(400).json({ error: "Vehicle ID is required in URL" });
+    // Get vehicle ID from URL
+    const { vehicleId } = req.params;
+
+    if (!vehicleId) {
+      return res.status(400).json({
+        error: "Vehicle ID is required in URL",
+      });
     }
-    // so find the vehicle in vehicle list
-    const vehicle = await Vehicles.findById(reViewVehicleId);
 
-    if (!vehicle) return res.status(404).send({ error: "vehicle not found" });
-    //and check you already review ro not
-    const alreadyreviewed = vehicle.reviews.find(
-      (review) => review.user.toString() == user,
+    // Find vehicle
+    const vehicle = await Vehicles.findById(vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({
+        error: "Vehicle not found",
+      });
+    }
+
+    // Make sure reviews array exists
+    if (!Array.isArray(vehicle.reviews)) {
+      vehicle.reviews = [];
+    }
+
+    // Check whether this user already reviewed this vehicle
+    const alreadyReviewed = vehicle.reviews.some(
+      (review) => review.user?.toString() === user.toString(),
     );
-    if (alreadyreviewed)
-      return res.status(400).send({ error: "you already review this vehilce" });
 
-    // so not review xa vane review garna pauxa
+    if (alreadyReviewed) {
+      return res.status(400).json({
+        error: "You have already reviewed this vehicle",
+      });
+    }
+
+    // Add review
     vehicle.reviews.push({
-      title,
-      comment,
-      rating,
       user,
+      title: title.trim(),
+      comment: comment.trim(),
+      rating: numericRating,
     });
 
-    vehicle.numReview += 1;
-    // and so total rating calculate
+    // Update number of reviews
+    vehicle.numReview = vehicle.reviews.length;
 
-    const totalrating = vehicle.reviews.reduce(
-      (acc, review) => acc + review.rating,
+    // Calculate average rating
+    const totalRating = vehicle.reviews.reduce(
+      (acc, review) => acc + Number(review.rating),
       0,
     );
-    /// so calcuale in the reting avrage
-    vehicle.rating = (totalrating / vehicle.numReview).toFixed(2);
+
+    vehicle.rating = Number(
+      (totalRating / vehicle.numReview).toFixed(2),
+    );
+
+    // Save to MongoDB
     await vehicle.save();
 
-    res.status(201).json({ message: "Review added successfully" });
+    return res.status(201).json({
+      message: "Review added successfully",
+      review: vehicle.reviews[vehicle.reviews.length - 1],
+      numReview: vehicle.numReview,
+      rating: vehicle.rating,
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "internal server error: " + err.message });
+    return res.status(500).json({
+      error: "Internal server error: " + err.message,
+    });
   }
 };
+
+// update in review code 
+// Update an existing review
+const updateReview = async (req, res) => {
+  try {
+    const { title, comment, rating } = req.body || {};
+    const { vehicleId, reviewId } = req.params;
+
+    // Validate required fields
+    if (!title?.trim() || !comment?.trim()) {
+      return res.status(400).json({
+        error: "Title and comment are required",
+      });
+    }
+
+    const numericRating = Number(rating);
+    if (
+      !Number.isInteger(numericRating) ||
+      numericRating < 1 ||
+      numericRating > 5
+    ) {
+      return res.status(400).json({
+        error: "Rating must be an integer between 1 and 5",
+      });
+    }
+
+    // Check logged-in user
+    const user = req.user?._id;
+    if (!user) {
+      return res.status(401).json({
+        error: "User not logged in",
+      });
+    }
+
+    if (!vehicleId || !reviewId) {
+      return res.status(400).json({
+        error: "Vehicle ID and Review ID are required in URL",
+      });
+    }
+
+    // Find vehicle
+    const vehicle = await Vehicles.findById(vehicleId);
+    if (!vehicle) {
+      return res.status(404).json({
+        error: "Vehicle not found",
+      });
+    }
+
+    // Make sure reviews array exists
+    if (!Array.isArray(vehicle.reviews)) {
+      vehicle.reviews = [];
+    }
+
+    // Find the specific review
+    const review = vehicle.reviews.id(reviewId);
+    if (!review) {
+      return res.status(404).json({
+        error: "Review not found",
+      });
+    }
+
+    // Only the owner of the review can update it
+    if (review.user?.toString() !== user.toString()) {
+      return res.status(403).json({
+        error: "You can only update your own review",
+      });
+    }
+
+    // Update fields
+    review.title = title.trim();
+    review.comment = comment.trim();
+    review.rating = numericRating;
+
+    // Recalculate number of reviews & average rating
+    vehicle.numReview = vehicle.reviews.length;
+
+    const totalRating = vehicle.reviews.reduce(
+      (acc, r) => acc + Number(r.rating),
+      0,
+    );
+
+    vehicle.rating = Number((totalRating / vehicle.numReview).toFixed(2));
+
+    await vehicle.save();
+
+    return res.status(200).json({
+      message: "Review updated successfully",
+      review,
+      numReview: vehicle.numReview,
+      rating: vehicle.rating,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: "Internal server error: " + err.message,
+    });
+  }
+};
+
 
 // update vehicle
 const UpdateVehicle = async (req, res) => {
@@ -323,6 +525,7 @@ export {
   addVechiles,
   getVehicleById,
   addreview,
+  updateReview,
   UpdateVehicle,
   deleteVehicle,
 };

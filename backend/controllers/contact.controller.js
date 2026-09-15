@@ -1,60 +1,63 @@
 import ContactMessage from "../Models/contact.message.js";
-const sendMessage = async(req,res)=>{
-    try{
-        const {name,email,phoneNumber,message}= req.body;
 
-        // Validate required fields
-        if(!name || !email || !phoneNumber || !message){
-            return  res.status(400).send({error:"All fields are required"});
-        }
-        const addMessage = ContactMessage.create({
-            name,
-            email,
-            phoneNumber,
-            message
-        });
+// Send a new contact message
+const sendMessage = async (req, res) => {
+  try {
+    const { name, email, phoneNumber, message } = req.body;
 
-        res.status(201).send({message:"message sent successfully"});
-
-
+    // Validate required fields
+    if (!name || !email || !phoneNumber || !message) {
+      return res.status(400).json({ error: "All fields are required" });
     }
-    catch(err){
-        res.status(500).send({error:err.message});
-    }
-}
 
-// and get all message in admin  
+    const addMessage = await ContactMessage.create({
+      name: name.trim(),
+      email: email.trim(),
+      phoneNumber: phoneNumber.trim(),
+      message: message.trim(),
+    });
 
-const getAllMessage= async(req,res)=>{
-    try{
-          const messages = await ContactMessage.find().populate("user","firstName lastName phoneNumber  email");
-    if(!messages){
-        return res.status(404).json({error:"message not found "})
-    };
-
-     res.status(200).send({message:"messages all show sucessfully",messages})
-    }
-    catch(err){
-        res.status(500).send({error:err.message})
-    }
-  
+    return res.status(201).json({
+      message: "Message sent successfully",
+      data: addMessage,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 };
-//  and delet message in  is admin 
-const deleteMessage= async(req,res)=>{
-    try{
-        const {id}= req.params;
 
-        const deletemessage  = await ContactMessage.findByIdAndDelete(id);
-        if(!deletemessage){
-            return res.status(404).send({error:"message is not found"});
-        }
-        res.status(200).send({message:"message is deleted successfully"})
+// Get all messages for admin
+const getAllMessage = async (req, res) => {
+  try {
+    const messages = await ContactMessage.find().sort({ createdAt: -1 });
 
-         
+    if (!messages || messages.length === 0) {
+      return res.status(404).json({ error: "No messages found" });
     }
-    catch(err){
-        res.status(500).send({error:err.message})
-    }
-}
 
-export {sendMessage,getAllMessage , deleteMessage} ;
+    return res.status(200).json({
+      message: "Messages retrieved successfully",
+      messages,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Delete a message by ID
+const deleteMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedMessage = await ContactMessage.findByIdAndDelete(id);
+    if (!deletedMessage) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export { sendMessage, getAllMessage, deleteMessage };

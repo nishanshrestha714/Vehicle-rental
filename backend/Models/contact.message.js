@@ -8,10 +8,17 @@ const  constactMessageSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    phoneNumber:{
-        type:String,
-        required:true,
-        match:/^\+977\d{10}$/
+  phoneNumber: {
+      type: String,
+      required: [true, "Phone number is required"],
+      trim: true,
+      validate: {
+        // Allows 10-digit numbers (like 9810309878) or international numbers (+977...)
+        validator: function (v) {
+          return /^(\+\d{1,3}[- ]?)?\d{10}$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid phone number!`,
+      },
     },
     message:{
         type:String,

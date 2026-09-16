@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { Row, Col, Container, Form, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,9 +39,6 @@ function getPasswordScore(pw) {
   if (/[^A-Za-z0-9]/.test(pw)) score++;
   return Math.min(score, 4);
 }
-
-const STRENGTH_LABELS = ["Weak", "Fair", "Good", "Strong"];
-const STRENGTH_BAR_COLORS = { 1: "#d64545", 2: "#4242dc", 3: "#d7b23c", 4: "#4caf6e" };
 
 function RegisterPage() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -391,26 +387,6 @@ function RegisterPage() {
                     </button>
                   </div>
 
-                  {password.length > 0 && (
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginTop: "0.5rem" }}>
-                      <div style={{ display: "flex", gap: "4px", flex: 1 }}>
-                        {[0, 1, 2, 3].map((i) => (
-                          <span
-                            key={i}
-                            style={{
-                              height: "4px",
-                              flex: 1,
-                              borderRadius: "2px",
-                              background: i < passwordScore ? STRENGTH_BAR_COLORS[passwordScore] : "#e6ddcd",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#6f6558", minWidth: "40px", textAlign: "right" }}>
-                        {STRENGTH_LABELS[Math.max(passwordScore - 1, 0)]}
-                      </span>
-                    </div>
-                  )}
                   {showError("password") && (
                     <div style={{ fontSize: "0.78rem", color: "#d64545", marginTop: "0.35rem" }}>
                       {fieldErrors.password}

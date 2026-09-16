@@ -104,7 +104,7 @@ Make sure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/nishanshrestha714/drivex.git
+git clone https://github.com/nishanshrestha714/Vehicle-rental.git
 cd drivex
 ```
 
@@ -121,7 +121,7 @@ Create a `.env` file in the `backend/` folder (see [Environment Variables](#envi
 npm run dev
 ```
 
-By default the backend should run on `http://localhost:5000` (adjust `PORT` in `.env` if needed).
+By default the backend should run on `http://localhost:8000` (adjust `PORT` in `.env` if needed).
 
 ### 3. Frontend setup
 

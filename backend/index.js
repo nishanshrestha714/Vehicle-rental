@@ -9,11 +9,15 @@ import 'dotenv/config';
 
 
 ConnectDB().then(()=>{
+    if (process.env.NODE_ENV !="production"){
+
+    
 app.listen(PORT,()=>{
     console.log(`server is running ${PORT}` )
     console.log("Looking for URL in:", process.cwd());
     console.log("URL found:", process.env.MONGODB_URL);
 });
+    }
 });
 
 

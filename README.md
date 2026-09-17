@@ -105,7 +105,6 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/nishanshrestha714/Vehicle-rental.git
-cd drivex
 ```
 
 ### 2. Backend setup

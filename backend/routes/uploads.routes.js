@@ -12,8 +12,8 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-// const storage = multer.diskStorage({
-const storage = multer.memoryStorage({
+const storage = multer.diskStorage({
+// const storage = multer.memoryStorage({
 
   destination: (req, file, cb) => {
     fs.mkdirSync("uploads/", { recursive: true });
